@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_user_info"
+        android:title="个人中心"/>
+    <item
+        android:id="@+id/navigation_attention"
+        android:title="我的关注"/>
+    <item
+        android:id="@+id/navigation_bill"
+        android:title="我的账单"/>
+    <item
+        android:id="@+id/navigation_credit"
+        android:title="信用值"/>
+    <item
+        android:id="@+id/setting"
+        android:title="@string/setting"/>
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"/>
+
+</menu>

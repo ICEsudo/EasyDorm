@@ -1,0 +1,131 @@
+package com.easydorm.easydorm;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.easydorm.easydorm.Utils.MD5Util;
+import com.easydorm.easydorm.http.GetRequestInterface;
+import com.easydorm.easydorm.http.URLManager;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+public class LoginActivity extends BaseActivity {
+
+    private EditText idEditText, pwEditText;
+    private Button loginButton, registerButton;
+    private RadioButton rememberButton;
+    private TextView forgetText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        initView();
+        initListener();
+
+    }
+
+    private void initView() {
+        idEditText = findViewById(R.id.login_edit_text_id);
+        pwEditText = findViewById(R.id.login_edit_text_pw);
+        loginButton = findViewById(R.id.login_button_login);
+        registerButton = findViewById(R.id.login_button_register);
+        rememberButton = findViewById(R.id.login_button_remember);
+        forgetText = findViewById(R.id.login_text_forget);
+        TextView textView = findViewById(R.id.login_text);
+        Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/login.ttf");
+        textView.setTypeface(tf);
+    }
+
+    private void initListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = idEditText.getText().toString();
+                String pw = pwEditText.getText().toString();
+                if(checkInput(id, pw)) {
+                    login(LoginActivity.this, id, MD5Util.encodeToHex(pw));
+                }
+            }
+        });
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
+    }
+
+    public boolean checkInput(String id, String pw) {
+        if(!id.equals("")) {
+            if(!pw.equals("")) {
+                return true;
+            } else {
+                Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "请输入账号", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+
+    public void login(final Context context, String id, String pw) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URLManager.baseUrl)
+                .build();
+
+        GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
+
+        Call<ResponseBody> call = getRequestInterface.login(id, pw);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if(response.body() == null) {
+                        Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String str = new String(response.body().bytes());
+                        JsonObject jsonObject = new JsonParser().parse(str).getAsJsonObject();
+                        Toast.makeText(context, jsonObject.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+                        if(jsonObject.get("code").getAsInt() == 1) {
+                            //TODO
+                            finish();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "未知错误", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(context, "请求失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+}
+

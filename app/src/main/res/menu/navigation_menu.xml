@@ -2,21 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_user_info"
+        android:icon="@drawable/identity___px"
         android:title="个人中心"/>
     <item
         android:id="@+id/navigation_attention"
+        android:icon="@drawable/favorite___px"
         android:title="我的关注"/>
     <item
         android:id="@+id/navigation_bill"
+        android:icon="@drawable/bill___px"
         android:title="我的账单"/>
     <item
         android:id="@+id/navigation_credit"
+        android:icon="@drawable/credit___px"
         android:title="信用值"/>
     <item
         android:id="@+id/setting"
+        android:icon="@drawable/settings___px"
         android:title="@string/setting"/>
     <item
         android:id="@+id/about"
+        android:icon="@drawable/info___px"
         android:title="@string/about"/>
 
 </menu>

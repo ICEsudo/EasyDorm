@@ -2,11 +2,13 @@ package com.easydorm.easydorm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -29,9 +31,10 @@ import retrofit2.Retrofit;
 public class LoginActivity extends BaseActivity {
 
     private EditText idEditText, pwEditText;
-    private Button loginButton, registerButton;
-    private RadioButton rememberButton;
+    private Button loginButton;
+    private CheckBox rememberButton;
     private TextView forgetText;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +43,23 @@ public class LoginActivity extends BaseActivity {
 
         initView();
         initListener();
+        initData();
 
+    }
+
+    private void initData() {
+        sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        rememberButton.setChecked(sp.getBoolean("rememberPassword", false));
+        if(rememberButton.isChecked()) {
+            idEditText.setText(sp.getString("userId", ""));
+            pwEditText.setText(sp.getString("password", ""));
+        }
     }
 
     private void initView() {
         idEditText = findViewById(R.id.login_edit_text_id);
         pwEditText = findViewById(R.id.login_edit_text_pw);
         loginButton = findViewById(R.id.login_button_login);
-        registerButton = findViewById(R.id.login_button_register);
         rememberButton = findViewById(R.id.login_button_remember);
         forgetText = findViewById(R.id.login_text_forget);
         TextView textView = findViewById(R.id.login_text);
@@ -66,10 +78,11 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        forgetText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                //TODO
+                Toast.makeText(LoginActivity.this, "再注册一个呗", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -110,6 +123,7 @@ public class LoginActivity extends BaseActivity {
                         Toast.makeText(context, jsonObject.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                         if(jsonObject.get("code").getAsInt() == 1) {
                             //TODO
+                            if(rememberButton.isChecked()) save();
                             finish();
                         }
                     }
@@ -127,5 +141,14 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    public void save() {
+        String id = idEditText.getText().toString();
+        String pw = pwEditText.getText().toString();
+        sp.edit().putString("userId", id)
+                .putString("password", pw)
+                .putBoolean("rememberPassword", rememberButton.isChecked())
+                .apply();
+
+    }
 }
 

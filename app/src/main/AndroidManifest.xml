@@ -16,13 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity" />
+        <activity android:name=".main.MainActivity" />
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".launch.SplashActivity"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GuideActivity"></activity>
+        <activity android:name=".launch.GuideActivity"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.easydorm.easydorm.fragment;
+package com.easydorm.easydorm.main.fragment;
 
 
 import android.os.Bundle;

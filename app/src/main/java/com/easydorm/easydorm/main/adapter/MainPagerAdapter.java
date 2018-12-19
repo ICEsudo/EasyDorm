@@ -1,6 +1,5 @@
-package com.easydorm.easydorm.adapter;
+package com.easydorm.easydorm.main.adapter;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;

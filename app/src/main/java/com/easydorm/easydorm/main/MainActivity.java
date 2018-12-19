@@ -1,13 +1,18 @@
-package com.easydorm.easydorm;
+package com.easydorm.easydorm.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+
+import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.LoginActivity;
+import com.easydorm.easydorm.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,12 +26,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.easydorm.easydorm.adapter.MainPagerAdapter;
-import com.easydorm.easydorm.fragment.AttentionFragment;
-import com.easydorm.easydorm.fragment.DormFragment;
-import com.easydorm.easydorm.fragment.MessageFragment;
-import com.easydorm.easydorm.fragment.RecommendFragment;
-import com.easydorm.easydorm.fragment.SearchFragment;
+import com.easydorm.easydorm.main.adapter.MainPagerAdapter;
+import com.easydorm.easydorm.main.fragment.AttentionFragment;
+import com.easydorm.easydorm.main.fragment.DormFragment;
+import com.easydorm.easydorm.main.fragment.MessageFragment;
+import com.easydorm.easydorm.main.fragment.RecommendFragment;
+import com.easydorm.easydorm.main.fragment.SearchFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -121,10 +126,10 @@ public class MainActivity extends BaseActivity {
         toolBarIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(drawerLayout.isDrawerOpen(Gravity.START)) {
-                    drawerLayout.closeDrawer(Gravity.START);
+                if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
-                    drawerLayout.openDrawer(Gravity.START);
+                    drawerLayout.openDrawer(GravityCompat.START);
                 }
             }
         });
@@ -247,7 +252,7 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.toolbar_transaction:
                 //TODO
-                Log.d("debug", "jiaoyi");
+                Log.d("debug", "transaction");
                 Toast.makeText(MainActivity.this, "这边是交易", Toast.LENGTH_SHORT).show();
                 break;
         }

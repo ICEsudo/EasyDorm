@@ -1,7 +1,7 @@
 package com.easydorm.easydorm;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,13 +9,22 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends BaseActivity {
 
     private MyHandle myHandle;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sp = getSharedPreferences("AppConstants", MODE_PRIVATE);
+        if(!sp.getBoolean("isFirstLaunch", false)) {
+            startActivity(new Intent(SplashActivity.this, GuideActivity.class));
+            sp.edit().putBoolean("isFirstLaunch", true).apply();
+            finish();
+        }
+
         setContentView(R.layout.activity_splash);
 
         getWindow().getDecorView().setSystemUiVisibility(
@@ -24,6 +33,8 @@ public class SplashActivity extends Activity {
         );
 
         myHandle = new MyHandle();
+
+
 
         init();
 

@@ -139,18 +139,18 @@ public class MainActivity extends BaseActivity {
                         textView.setText("");
                         tabLayout.setVisibility(View.VISIBLE);
                         if(viewPager.getCurrentItem() > 2) {
-                            viewPager.setCurrentItem(0);
+                            viewPager.setCurrentItem(0, false);
                         }
                         break;
                     case R.id.navigation_dorm:
                         tabLayout.setVisibility(View.INVISIBLE);
                         textView.setText("宿舍");
-                        viewPager.setCurrentItem(3);
+                        viewPager.setCurrentItem(3, false);
                         break;
                     case R.id.navigation_message:
                         tabLayout.setVisibility(View.INVISIBLE);
                         textView.setText("消息");
-                        viewPager.setCurrentItem(4);
+                        viewPager.setCurrentItem(4, false);
                         break;
                 }
                 return true;

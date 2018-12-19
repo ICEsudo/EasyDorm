@@ -7,4 +7,12 @@
         <item name="android:overlapAnchor">false</item>
     </style>
 
+    <style name="AppTheme.Full" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="AppTheme.Full">
+        <item name="android:windowBackground">@mipmap/photo_5</item>
+    </style>
+
 </resources>

@@ -3,19 +3,24 @@ package com.easydorm.easydorm;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easydorm.easydorm.adapter.MainPagerAdapter;
@@ -26,7 +31,7 @@ import com.easydorm.easydorm.fragment.RecommendFragment;
 import com.easydorm.easydorm.fragment.SearchFragment;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,9 +44,12 @@ public class MainActivity extends BaseActivity {
     CircleImageView userAvatarView, toolBarIcon;
     View navigationHeader;
     DrawerLayout drawerLayout;
+    TabLayout tabLayout;
     ViewPager viewPager;
     MainPagerAdapter mainPagerAdapter;
     ArrayList<Fragment> fragmentsList;
+    TextView textView;
+    ActionMenuView actionMenuView;
 
     SharedPreferences sp;
 
@@ -55,8 +63,6 @@ public class MainActivity extends BaseActivity {
         initView();
         initListener();
         initData();
-
-
 
     }
 
@@ -74,11 +80,13 @@ public class MainActivity extends BaseActivity {
         mainPagerAdapter.setListViews(fragmentsList);
         viewPager.setAdapter(mainPagerAdapter);
 
+
     }
 
 
     private void initView() {
         toolbar = findViewById(R.id.toolbar_main);
+
         navigationView = findViewById(R.id.navigation);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         navigationHeader = navigationView.getHeaderView(0);
@@ -86,6 +94,11 @@ public class MainActivity extends BaseActivity {
         drawerLayout = findViewById(R.id.drawer_layout_main);
         toolBarIcon = toolbar.findViewById(R.id.toolbar_icon);
         viewPager = findViewById(R.id.view_pager_main);
+        tabLayout = findViewById(R.id.toolbar_tab);
+        textView = findViewById(R.id.text_title);
+        actionMenuView = toolbar.findViewById(R.id.toolbar_menu_view);
+        setSupportActionBar(toolbar);
+        Log.d("debug", "initView");
     }
 
     private void initListener() {
@@ -107,30 +120,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //TODO
-                switch (menuItem.getItemId()) {
-                    case R.id.navigation_home:
-                        Toast.makeText(MainActivity.this, "这是主页", Toast.LENGTH_SHORT).show();
-                        if(viewPager.getCurrentItem() > 2) {
-                            viewPager.setCurrentItem(0);
-                        }
-                        break;
-                    case R.id.navigation_dorm:
-                        Toast.makeText(MainActivity.this, "这是您的宿舍", Toast.LENGTH_SHORT).show();
-                        viewPager.setCurrentItem(3);
-                        break;
-                    case R.id.navigation_message:
-                        Toast.makeText(MainActivity.this, "您没有收到消息", Toast.LENGTH_SHORT).show();
-                        viewPager.setCurrentItem(4);
-                        break;
-                }
-                return true;
-            }
-        });
-
         toolBarIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +131,60 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        textView.setText("");
+                        tabLayout.setVisibility(View.VISIBLE);
+                        if(viewPager.getCurrentItem() > 2) {
+                            viewPager.setCurrentItem(0);
+                        }
+                        break;
+                    case R.id.navigation_dorm:
+                        tabLayout.setVisibility(View.INVISIBLE);
+                        textView.setText("宿舍");
+                        viewPager.setCurrentItem(3);
+                        break;
+                    case R.id.navigation_message:
+                        tabLayout.setVisibility(View.INVISIBLE);
+                        textView.setText("消息");
+                        viewPager.setCurrentItem(4);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        viewPager.setCurrentItem(0);
+                        break;
+                    case 1:
+                        viewPager.setCurrentItem(1);
+                        break;
+                    case 2:
+                        viewPager.setCurrentItem(2);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -152,8 +195,13 @@ public class MainActivity extends BaseActivity {
             public void onPageSelected(int i) {
                 switch (i) {
                     case 0:
+                        Objects.requireNonNull(tabLayout.getTabAt(0)).select();
+                        break;
                     case 1:
+                        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+                        break;
                     case 2:
+                        Objects.requireNonNull(tabLayout.getTabAt(2)).select();
                         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
                         break;
                     case 3:
@@ -171,6 +219,40 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+
+        actionMenuView.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                return onOptionsItemSelected(menuItem);
+            }
+        });
+
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d("debug", "onCreateMenu");
+
+        getMenuInflater().inflate(R.menu.toolbar_main_menu, actionMenuView.getMenu());
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("debug", "onClick");
+        switch (item.getItemId()) {
+            case R.id.toolbar_share:
+                //TODO
+                Log.d("debug", "share");
+                Toast.makeText(MainActivity.this, "这里是分享", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.toolbar_transaction:
+                //TODO
+                Log.d("debug", "jiaoyi");
+                Toast.makeText(MainActivity.this, "这边是交易", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
+    }
 }

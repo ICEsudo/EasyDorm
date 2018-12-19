@@ -1,4 +1,4 @@
-package com.easydorm.easydorm;
+package com.easydorm.easydorm.annotation;
 
 
 import java.lang.annotation.ElementType;
@@ -9,5 +9,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LoginRequired {
+
+    String toastStr() default "未登录,请先登录";
+
 
 }

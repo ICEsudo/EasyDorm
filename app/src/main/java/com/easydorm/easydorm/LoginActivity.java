@@ -122,7 +122,8 @@ public class LoginActivity extends BaseActivity {
                         Toast.makeText(context, jsonObject.get("message").getAsString(), Toast.LENGTH_SHORT).show();
                         if(jsonObject.get("code").getAsInt() == 1) {
                             //TODO
-                            if(rememberButton.isChecked()) save();
+
+                            save();
                             finish();
                         }
                     }
@@ -146,6 +147,7 @@ public class LoginActivity extends BaseActivity {
         sp.edit().putString("userId", id)
                 .putString("password", pw)
                 .putBoolean("rememberPassword", rememberButton.isChecked())
+                .putString("accessToken", "fakeTokenForTest")
                 .apply();
 
     }

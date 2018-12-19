@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.UserInfoActivity;
+import com.easydorm.easydorm.annotation.LoginRequired;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity {
         initListener();
         initData();
 
+
     }
 
     private void initData() {
@@ -89,7 +92,7 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         toolbar = findViewById(R.id.toolbar_main);
-
+        setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.navigation);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         navigationHeader = navigationView.getHeaderView(0);
@@ -100,7 +103,6 @@ public class MainActivity extends BaseActivity {
         tabLayout = findViewById(R.id.toolbar_tab);
         textView = findViewById(R.id.text_title);
         actionMenuView = toolbar.findViewById(R.id.toolbar_menu_view);
-        setSupportActionBar(toolbar);
         Log.d("debug", "initView");
     }
 
@@ -118,7 +120,13 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 //TODO
-                Toast.makeText(MainActivity.this, "别点啦！还没做呢", Toast.LENGTH_SHORT).show();
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_user_info:
+                        startUserInfo();
+                        break;
+                    default:
+                        Toast.makeText(MainActivity.this, "别点啦！还没做呢", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
         });
@@ -222,13 +230,13 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
         actionMenuView.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 return onOptionsItemSelected(menuItem);
             }
         });
+
 
 
     }
@@ -238,6 +246,7 @@ public class MainActivity extends BaseActivity {
         Log.d("debug", "onCreateMenu");
 
         getMenuInflater().inflate(R.menu.toolbar_main_menu, actionMenuView.getMenu());
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -258,4 +267,10 @@ public class MainActivity extends BaseActivity {
         }
         return true;
     }
+
+    @LoginRequired
+    private void startUserInfo() {
+        startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
+    }
+
 }

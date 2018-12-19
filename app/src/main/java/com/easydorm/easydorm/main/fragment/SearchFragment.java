@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.easydorm.easydorm.R;
 
+import java.util.Objects;
+
 
 public class SearchFragment extends Fragment {
 
@@ -61,6 +63,12 @@ public class SearchFragment extends Fragment {
                 if(!b) {
                     searchView.clearFocus();
                 }
+            }
+        });
+        view.findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.clearFocus();
             }
         });
     }

@@ -30,7 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".launch.GuideActivity"></activity>
+        <activity android:name=".launch.GuideActivity" />
+        <activity android:name=".UserInfoActivity"></activity>
     </application>
 
 </manifest>

@@ -18,8 +18,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
+            android:theme="@style/AppTheme.ToolBar"
+            app:popupTheme="@style/AppTheme.ToolBar"
             app:contentInsetStart="0dp"
-            android:theme="@style/AppTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >

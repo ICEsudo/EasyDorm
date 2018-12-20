@@ -17,6 +17,8 @@ public class EasyDormApp extends Application {
 
         context = getApplicationContext();
 
+
+
     }
 
     public static Context getContext() {
@@ -30,4 +32,6 @@ public class EasyDormApp extends Application {
     public static void setUser(User user) {
         EasyDormApp.user = user;
     }
+
+
 }

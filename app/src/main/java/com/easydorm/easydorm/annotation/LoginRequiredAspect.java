@@ -51,17 +51,17 @@ public class LoginRequiredAspect {
             activity = ((Fragment) target).getActivity();
         }
 
-        if(UserUtil.loginCheck() == 0) {
-            Toast.makeText(context, loginRequired.toastStr(), Toast.LENGTH_SHORT).show();
-            if (activity != null) {
-                Intent intent = new Intent(activity, LoginActivity.class);
-                activity.startActivity(intent);
-            }
-        } else {
+        if(EasyDormApp.getUser().getToken().checkToken()) {
             try {
                 proceedingJoinPoint.proceed();
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
+            }
+        } else {
+            Toast.makeText(context, loginRequired.toastStr(), Toast.LENGTH_SHORT).show();
+            if (activity != null) {
+                Intent intent = new Intent(activity, LoginActivity.class);
+                activity.startActivity(intent);
             }
         }
 

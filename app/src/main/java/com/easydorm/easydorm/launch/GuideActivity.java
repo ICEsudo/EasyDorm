@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.launch.fragment.GuideFragment;
@@ -54,7 +55,8 @@ public class GuideActivity extends AppIntro {
     public void onSkipPressed(Fragment currentFragment) {
         sp.edit().putBoolean("isFirstLaunch", false).apply();
         super.onSkipPressed(currentFragment);
-        startActivity(new Intent(GuideActivity.this, MainActivity.class));
+        startActivity(new Intent(GuideActivity.this, LoginActivity.class));
+        finish();
     }
 
 
@@ -62,6 +64,7 @@ public class GuideActivity extends AppIntro {
     public void onDonePressed(Fragment currentFragment) {
         sp.edit().putBoolean("isFirstLaunch", false).apply();
         super.onDonePressed(currentFragment);
-        startActivity(new Intent(GuideActivity.this, MainActivity.class));
+        startActivity(new Intent(GuideActivity.this, LoginActivity.class));
+        finish();
     }
 }

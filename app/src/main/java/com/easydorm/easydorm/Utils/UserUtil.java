@@ -8,7 +8,7 @@ import com.easydorm.easydorm.EasyDormApp;
 public class UserUtil {
 
     public static int loginCheck() {
-        SharedPreferences sp = EasyDormApp.getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        SharedPreferences sp = SPUtil.getUserInfo();
         String token = sp.getString("accessToken", "");
 
         //TODO      request and check permission

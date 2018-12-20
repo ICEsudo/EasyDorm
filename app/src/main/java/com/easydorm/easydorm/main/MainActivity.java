@@ -3,13 +3,17 @@ package com.easydorm.easydorm.main;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.midi.MidiDeviceService;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.easydorm.easydorm.AboutActivity;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.SettingActivity;
 import com.easydorm.easydorm.UserInfoActivity;
+import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.UserUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -69,18 +73,15 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(UserUtil.loginCheck() == 0) {
-            startActivity(new Intent(this, LoginActivity.class));
-        }
+
         initView();
         initListener();
         initData();
 
-
     }
 
     private void initData() {
-        sp = this.getSharedPreferences("userInfo", MODE_PRIVATE);
+        sp = SPUtil.getUserInfo();
 
         fragmentsList = new ArrayList<>();
         fragmentsList.add(new RecommendFragment());
@@ -92,7 +93,6 @@ public class MainActivity extends BaseActivity {
         mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mainPagerAdapter.setListViews(fragmentsList);
         viewPager.setAdapter(mainPagerAdapter);
-
 
     }
 
@@ -134,6 +134,11 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_user_info:
                         startUserInfo();
                         break;
+                    case R.id.setting:
+                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                        break;
+                    case R.id.about:
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
                     default:
                         Toast.makeText(MainActivity.this, "别点啦！还没做呢", Toast.LENGTH_SHORT).show();
                 }

@@ -10,8 +10,12 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
+import com.easydorm.easydorm.entity.User;
+import com.easydorm.easydorm.entity.UserInfo;
+import com.easydorm.easydorm.entity.UserToken;
 import com.easydorm.easydorm.main.MainActivity;
 import com.easydorm.easydorm.R;
 
@@ -32,18 +36,23 @@ public class SplashActivity extends BaseActivity {
             return;
         }
 
+        sp = SPUtil.getUserInfo();
+        UserToken userToken = new UserToken(
+                sp.getString("accessToken", ""),
+                sp.getString("refreshToken", ""));
+        UserInfo userInfo = new UserInfo(sp.getInt("userType", 0));
+        EasyDormApp.setUser(new User(userToken, userInfo));
+
         setContentView(R.layout.activity_splash);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         myHandle = new MyHandle();
 
-
-
         init();
 
-
     }
+
 
     private void init() {
         try {
@@ -57,15 +66,24 @@ public class SplashActivity extends BaseActivity {
     }
 
 
+    @LoginRequired
+    private void startMainActivity() {
+
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+
     class MyHandle extends Handler {
         @Override
         public void handleMessage(Message msg) {
             if(msg.what == 1) {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                startMainActivity();
                 finish();
             }
         }
     }
+
+
 
 
 }

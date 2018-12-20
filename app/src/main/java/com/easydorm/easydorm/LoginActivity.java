@@ -16,8 +16,12 @@ import android.widget.Toast;
 
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.entity.User;
+import com.easydorm.easydorm.entity.UserInfo;
+import com.easydorm.easydorm.entity.UserToken;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.URLManager;
+import com.easydorm.easydorm.main.MainActivity;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -119,6 +123,7 @@ public class LoginActivity extends BaseActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
                 try {
                     if(response.body() == null) {
                         Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
@@ -126,11 +131,14 @@ public class LoginActivity extends BaseActivity {
                         String str = new String(response.body().bytes());
                         JsonObject jsonObject = new JsonParser().parse(str).getAsJsonObject();
                         Toast.makeText(context, jsonObject.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+
                         if(jsonObject.get("code").getAsInt() == 1) {
-                            //TODO
-
+                            String refreshToken = response.headers().get("refresh_token");
+                            String accessToken = response.headers().get("access_token");
+                            int userType = spinner.getSelectedItemPosition();
+                            EasyDormApp.setUser(new User(new UserToken(accessToken, refreshToken), new UserInfo(userType)));
                             save();
-
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         }
                     }
@@ -138,6 +146,7 @@ public class LoginActivity extends BaseActivity {
                     e.printStackTrace();
                     Toast.makeText(context, "未知错误", Toast.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
@@ -151,12 +160,9 @@ public class LoginActivity extends BaseActivity {
     public void save() {
         String id = idEditText.getText().toString();
         String pw = pwEditText.getText().toString();
-        int userType = spinner.getSelectedItemPosition();
         sp.edit().putString("userId", id)
                 .putString("password", pw)
-                .putInt("userType", userType)
                 .putBoolean("rememberPassword", rememberButton.isChecked())
-                .putString("accessToken", "fakeTokenForTest")
                 .apply();
     }
 }

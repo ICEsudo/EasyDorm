@@ -31,7 +31,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".launch.GuideActivity" />
-        <activity android:name=".UserInfoActivity"></activity>
+        <activity android:name=".UserInfoActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

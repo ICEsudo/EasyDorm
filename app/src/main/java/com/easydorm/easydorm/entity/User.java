@@ -5,6 +5,10 @@ public class User {
     private UserInfo userInfo;
     private UserToken userToken;
 
+    public User(UserToken userToken, UserInfo userInfo) {
+        this.userToken = userToken;
+        this.userInfo = userInfo;
+    }
 
     public boolean updateUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
@@ -15,12 +19,9 @@ public class User {
         return userInfo;
     }
 
-    public String getToken() {
-        return userToken.getAccessToken();
+    public UserToken getToken() {
+        return userToken;
     }
 
-    public boolean refreshToken() {
-        return userToken.refresh();
-    }
 
 }

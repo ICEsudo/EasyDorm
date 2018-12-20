@@ -9,7 +9,11 @@ public interface GetRequestInterface {
 
 
     @GET("login")
-    Call<ResponseBody> login(@Query("username") String username, @Query("password") String password);
+    Call<ResponseBody> login(
+            @Query("username") String username,
+            @Query("password") String password,
+            @Query("level") int level
+    );
 
 
 }

@@ -1,5 +1,6 @@
 package com.easydorm.easydorm.main;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,11 +10,14 @@ import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.UserInfoActivity;
+import com.easydorm.easydorm.Utils.UserUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -23,6 +27,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -55,6 +60,7 @@ public class MainActivity extends BaseActivity {
     ArrayList<Fragment> fragmentsList;
     TextView textView;
     ActionMenuView actionMenuView;
+    PopupMenu popupMenu;
 
     SharedPreferences sp;
 
@@ -63,8 +69,9 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startActivity(new Intent(this, LoginActivity.class));
-
+        if(UserUtil.loginCheck() == 0) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
         initView();
         initListener();
         initData();
@@ -90,9 +97,9 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    @SuppressLint("RestrictedApi")
     private void initView() {
         toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.navigation);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         navigationHeader = navigationView.getHeaderView(0);
@@ -103,6 +110,9 @@ public class MainActivity extends BaseActivity {
         tabLayout = findViewById(R.id.toolbar_tab);
         textView = findViewById(R.id.text_title);
         actionMenuView = toolbar.findViewById(R.id.toolbar_menu_view);
+        popupMenu = new PopupMenu(this, actionMenuView);
+        setSupportActionBar(toolbar);
+
         Log.d("debug", "initView");
     }
 
@@ -195,7 +205,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -230,38 +239,37 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        actionMenuView.setOnMenuItemClickListener(new ActionMenuView.OnMenuItemClickListener() {
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                return onOptionsItemSelected(menuItem);
+            public boolean onMenuItemClick(MenuItem item) {
+                return onOptionsItemSelected(item);
             }
         });
 
-
+        actionMenuView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu.show();
+            }
+        });
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("debug", "onCreateMenu");
-
-        getMenuInflater().inflate(R.menu.toolbar_main_menu, actionMenuView.getMenu());
-
+        popupMenu.inflate(R.menu.toolbar_main_menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("debug", "onClick");
         switch (item.getItemId()) {
             case R.id.toolbar_share:
                 //TODO
-                Log.d("debug", "share");
                 Toast.makeText(MainActivity.this, "这里是分享", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.toolbar_transaction:
                 //TODO
-                Log.d("debug", "transaction");
                 Toast.makeText(MainActivity.this, "这边是交易", Toast.LENGTH_SHORT).show();
                 break;
         }

@@ -5,10 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.main.MainActivity;
 import com.easydorm.easydorm.R;
 
@@ -20,9 +23,10 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("life", "Splash start");
 
-        sp = getSharedPreferences("AppConstants", MODE_PRIVATE);
-        if(!sp.getBoolean("isFirstLaunch", false)) {
+        sp = SPUtil.getAppConstants();
+        if(sp.getBoolean("isFirstLaunch", true)) {
             startActivity(new Intent(SplashActivity.this, GuideActivity.class));
             finish();
             return;
@@ -44,9 +48,11 @@ public class SplashActivity extends BaseActivity {
     private void init() {
         try {
             Thread.sleep(1000);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Log.d("life", "Splash end");
         myHandle.sendEmptyMessage(1);
     }
 

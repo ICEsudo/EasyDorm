@@ -10,10 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easydorm.easydorm.Utils.MD5Util;
+import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.URLManager;
 import com.google.gson.JsonObject;
@@ -34,6 +36,7 @@ public class LoginActivity extends BaseActivity {
     private CheckBox rememberButton;
     private TextView forgetText;
     private SharedPreferences sp;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +50,12 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initData() {
-        sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        sp = SPUtil.getUserInfo();
         rememberButton.setChecked(sp.getBoolean("rememberPassword", false));
         if(rememberButton.isChecked()) {
             idEditText.setText(sp.getString("userId", ""));
             pwEditText.setText(sp.getString("password", ""));
+            spinner.setSelection(sp.getInt("level", 0));
         }
     }
 
@@ -61,6 +65,7 @@ public class LoginActivity extends BaseActivity {
         loginButton = findViewById(R.id.login_button_login);
         rememberButton = findViewById(R.id.login_button_remember);
         forgetText = findViewById(R.id.login_text_forget);
+        spinner = findViewById(R.id.login_spinner);
         TextView textView = findViewById(R.id.login_text);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/login.ttf");
         textView.setTypeface(tf);
@@ -72,8 +77,9 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View view) {
                 String id = idEditText.getText().toString();
                 String pw = pwEditText.getText().toString();
+                int level = spinner.getSelectedItemPosition();
                 if(checkInput(id, pw)) {
-                    login(LoginActivity.this, id, MD5Util.encodeToHex(pw));
+                    login(LoginActivity.this, id, MD5Util.encodeToHex(pw), level);
                 }
             }
         });
@@ -81,7 +87,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //TODO
-                Toast.makeText(LoginActivity.this, "再注册一个呗", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "慢慢想别急", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -100,7 +106,7 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    public void login(final Context context, String id, String pw) {
+    public void login(final Context context, String id, String pw, int level) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URLManager.baseUrl)
@@ -108,7 +114,7 @@ public class LoginActivity extends BaseActivity {
 
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
 
-        Call<ResponseBody> call = getRequestInterface.login(id, pw);
+        Call<ResponseBody> call = getRequestInterface.login(id, pw, level);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -124,6 +130,7 @@ public class LoginActivity extends BaseActivity {
                             //TODO
 
                             save();
+
                             finish();
                         }
                     }
@@ -144,12 +151,13 @@ public class LoginActivity extends BaseActivity {
     public void save() {
         String id = idEditText.getText().toString();
         String pw = pwEditText.getText().toString();
+        int userType = spinner.getSelectedItemPosition();
         sp.edit().putString("userId", id)
                 .putString("password", pw)
+                .putInt("userType", userType)
                 .putBoolean("rememberPassword", rememberButton.isChecked())
                 .putString("accessToken", "fakeTokenForTest")
                 .apply();
-
     }
 }
 

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.LoginActivity;
+import com.easydorm.easydorm.Utils.UserUtil;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,24 +21,27 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import androidx.fragment.app.Fragment;
 
+
+
+
 @Aspect
 public class LoginRequiredAspect {
 
     private Context context;
     private Activity activity;
-    private SharedPreferences sp;
 
 
-    @Pointcut("execution(* com.easydorm.easydorm..*(..)) && @annotation(loginRequired)")
-    public void aspect(LoginRequired loginRequired) { }
+    @Pointcut("execution(* com.easydorm.easydorm..*(..))")
+    public void allExecution() { }
 
 
-    @Around("aspect(loginRequired)")
-    public void requiredLogin(final ProceedingJoinPoint proceedingJoinPoint, final LoginRequired loginRequired) {
+
+
+    @Around("allExecution() && @annotation(loginRequired)")
+    public void requireLogin(final ProceedingJoinPoint proceedingJoinPoint, final LoginRequired loginRequired) {
         Log.d("Annotation", ">>>>>>>>>>>LoginRequired");
 
         context = EasyDormApp.getContext();
-        sp = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
 
         Object target = proceedingJoinPoint.getTarget();
         activity = null;
@@ -47,7 +51,7 @@ public class LoginRequiredAspect {
             activity = ((Fragment) target).getActivity();
         }
 
-        if(loginCheck() == 0) {
+        if(UserUtil.loginCheck() == 0) {
             Toast.makeText(context, loginRequired.toastStr(), Toast.LENGTH_SHORT).show();
             if (activity != null) {
                 Intent intent = new Intent(activity, LoginActivity.class);
@@ -63,16 +67,7 @@ public class LoginRequiredAspect {
 
     }
 
-    private int loginCheck() {
-        String token = sp.getString("accessToken", "");
 
-        //TODO      request and check permission
-        if(token!=null && !token.equals("")) {
-            return 1;
-        }
-
-        return 0;
-    }
 
 
 

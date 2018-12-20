@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.launch.fragment.GuideFragment;
 import com.easydorm.easydorm.main.MainActivity;
 import com.github.paolorotolo.appintro.AppIntro;
@@ -22,7 +23,7 @@ public class GuideActivity extends AppIntro {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        sp = getSharedPreferences("AppConstants", MODE_PRIVATE);
+        sp = SPUtil.getAppConstants();
 
         GuideFragment guideFragment1 = new GuideFragment();
         guideFragment1.setImageView(R.mipmap.photo_1);
@@ -51,7 +52,7 @@ public class GuideActivity extends AppIntro {
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
-        sp.edit().putBoolean("isFirstLaunch", true).apply();
+        sp.edit().putBoolean("isFirstLaunch", false).apply();
         super.onSkipPressed(currentFragment);
         startActivity(new Intent(GuideActivity.this, MainActivity.class));
     }
@@ -59,7 +60,7 @@ public class GuideActivity extends AppIntro {
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
-        sp.edit().putBoolean("isFirstLaunch", true).apply();
+        sp.edit().putBoolean("isFirstLaunch", false).apply();
         super.onDonePressed(currentFragment);
         startActivity(new Intent(GuideActivity.this, MainActivity.class));
     }

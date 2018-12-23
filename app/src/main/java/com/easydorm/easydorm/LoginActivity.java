@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    public void login(final Context context, String id, String pw, int level) {
+    public void login(final Context context, String id, String pw, final int level) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URLManager.baseUrl)
@@ -131,12 +131,10 @@ public class LoginActivity extends BaseActivity {
                         String str = new String(response.body().bytes());
                         JsonObject jsonObject = new JsonParser().parse(str).getAsJsonObject();
                         Toast.makeText(context, jsonObject.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-
                         if(jsonObject.get("code").getAsInt() == 1) {
                             String refreshToken = response.headers().get("refresh_token");
                             String accessToken = response.headers().get("access_token");
-                            int userType = spinner.getSelectedItemPosition();
-                            EasyDormApp.setUser(new User(new UserToken(accessToken, refreshToken), new UserInfo(userType)));
+                            EasyDormApp.setUser(new User(new UserToken(accessToken, refreshToken), new UserInfo(level)));
                             save();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
@@ -162,6 +160,7 @@ public class LoginActivity extends BaseActivity {
         String pw = pwEditText.getText().toString();
         sp.edit().putString("userId", id)
                 .putString("password", pw)
+                .putBoolean("isLogined", true)
                 .putBoolean("rememberPassword", rememberButton.isChecked())
                 .apply();
     }

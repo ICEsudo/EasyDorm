@@ -14,6 +14,9 @@ import retrofit2.http.POST;
 
 public interface PostRequestInterface {
 
-
+    @POST("check_token")
+    Call<ResponseBody> checkToken(
+            @Header("access_token") String accessToken
+    );
 
 }

@@ -11,6 +11,7 @@ import android.view.WindowManager;
 
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
+import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.entity.User;
@@ -36,12 +37,7 @@ public class SplashActivity extends BaseActivity {
             return;
         }
 
-        sp = SPUtil.getUserInfo();
-        UserToken userToken = new UserToken(
-                sp.getString("accessToken", ""),
-                sp.getString("refreshToken", ""));
-        UserInfo userInfo = new UserInfo(sp.getInt("userType", 0));
-        EasyDormApp.setUser(new User(userToken, userInfo));
+        initUser();
 
         setContentView(R.layout.activity_splash);
 
@@ -51,6 +47,15 @@ public class SplashActivity extends BaseActivity {
 
         init();
 
+    }
+
+    private void initUser() {
+        sp = SPUtil.getUserInfo();
+        UserToken userToken = new UserToken(
+                sp.getString("accessToken", ""),
+                sp.getString("refreshToken", ""));
+        UserInfo userInfo = new UserInfo(sp.getInt("userType", 0));
+        EasyDormApp.setUser(new User(userToken, userInfo));
     }
 
 
@@ -68,7 +73,6 @@ public class SplashActivity extends BaseActivity {
 
     @LoginRequired
     private void startMainActivity() {
-
         startActivity(new Intent(this, MainActivity.class));
     }
 
@@ -77,13 +81,19 @@ public class SplashActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             if(msg.what == 1) {
-                startMainActivity();
+                if(SPUtil.getUserInfo().getBoolean("isLogined", false)) {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }
+//                startMainActivity();
                 finish();
             }
         }
     }
 
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

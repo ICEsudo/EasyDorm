@@ -3,76 +3,72 @@ package com.easydorm.easydorm.main;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.midi.MidiDeviceService;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-
-import com.easydorm.easydorm.AboutActivity;
-import com.easydorm.easydorm.BaseActivity;
-import com.easydorm.easydorm.LoginActivity;
-import com.easydorm.easydorm.R;
-import com.easydorm.easydorm.SettingActivity;
-import com.easydorm.easydorm.UserInfoActivity;
-import com.easydorm.easydorm.Utils.SPUtil;
-import com.easydorm.easydorm.Utils.UserUtil;
-import com.easydorm.easydorm.annotation.LoginRequired;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.widget.ActionMenuView;
-import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.easydorm.easydorm.AboutActivity;
+import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.UserInfoActivity;
+import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.main.adapter.MainPagerAdapter;
 import com.easydorm.easydorm.main.fragment.AttentionFragment;
 import com.easydorm.easydorm.main.fragment.DormFragment;
 import com.easydorm.easydorm.main.fragment.MessageFragment;
 import com.easydorm.easydorm.main.fragment.RecommendFragment;
 import com.easydorm.easydorm.main.fragment.SearchFragment;
+import com.easydorm.easydorm.setting.SettingActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.ActionMenuView;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends BaseActivity {
 
-    Toolbar toolbar;
-    NavigationView navigationView;
-    BottomNavigationView bottomNavigationView;
-    CircleImageView userAvatarView, toolBarIcon;
+    @BindView(R.id.toolbar_main) Toolbar toolbar;
+    @BindView(R.id.navigation) NavigationView navigationView;
+    @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
+    @BindView(R.id.drawer_layout_main) DrawerLayout drawerLayout;
+    @BindView(R.id.toolbar_tab) TabLayout tabLayout;
+    @BindView(R.id.view_pager_main) ViewPager viewPager;
+    @BindView(R.id.text_title) TextView textView;
+    @BindView(R.id.toolbar_menu_view) ActionMenuView actionMenuView;
+    @BindView(R.id.toolbar_icon) CircleImageView toolBarIcon;
+    CircleImageView userAvatarView;
     View navigationHeader;
-    DrawerLayout drawerLayout;
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    MainPagerAdapter mainPagerAdapter;
-    ArrayList<Fragment> fragmentsList;
-    TextView textView;
-    ActionMenuView actionMenuView;
     PopupMenu popupMenu;
 
+    ArrayList<Fragment> fragmentsList;
+    MainPagerAdapter mainPagerAdapter;
     SharedPreferences sp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ButterKnife.bind(this);
+        addActivity(this);
 
         initView();
         initListener();
@@ -99,21 +95,10 @@ public class MainActivity extends BaseActivity {
 
     @SuppressLint("RestrictedApi")
     private void initView() {
-        toolbar = findViewById(R.id.toolbar_main);
-        navigationView = findViewById(R.id.navigation);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
         navigationHeader = navigationView.getHeaderView(0);
         userAvatarView = navigationHeader.findViewById(R.id.user_avatar);
-        drawerLayout = findViewById(R.id.drawer_layout_main);
-        toolBarIcon = toolbar.findViewById(R.id.toolbar_icon);
-        viewPager = findViewById(R.id.view_pager_main);
-        tabLayout = findViewById(R.id.toolbar_tab);
-        textView = findViewById(R.id.text_title);
-        actionMenuView = toolbar.findViewById(R.id.toolbar_menu_view);
         popupMenu = new PopupMenu(this, actionMenuView);
         setSupportActionBar(toolbar);
-
-        Log.d("debug", "initView");
     }
 
     private void initListener() {
@@ -139,6 +124,7 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.about:
                         startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                        break;
                     default:
                         Toast.makeText(MainActivity.this, "别点啦！还没做呢", Toast.LENGTH_SHORT).show();
                 }
@@ -149,7 +135,7 @@ public class MainActivity extends BaseActivity {
         toolBarIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
                     drawerLayout.openDrawer(GravityCompat.START);
@@ -164,7 +150,7 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_home:
                         textView.setText("");
                         tabLayout.setVisibility(View.VISIBLE);
-                        if(viewPager.getCurrentItem() > 2) {
+                        if (viewPager.getCurrentItem() > 2) {
                             viewPager.setCurrentItem(0, false);
                         }
                         break;
@@ -286,4 +272,10 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeActivity(this);
+    }
 }

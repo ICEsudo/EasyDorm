@@ -1,4 +1,4 @@
-package com.easydorm.easydorm.main.fragment;
+package com.easydorm.easydorm.posts.fragment;
 
 
 import android.os.Bundle;
@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 
 import com.easydorm.easydorm.R;
 
+public class AttentionFragment extends Fragment {
 
-public class MessageFragment extends Fragment {
 
-
-    public MessageFragment() {
+    public AttentionFragment() {
 
     }
 
@@ -22,7 +21,7 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_message, container, false);
+        return inflater.inflate(R.layout.fragment_attention, container, false);
     }
 
 }

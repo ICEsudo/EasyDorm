@@ -1,4 +1,4 @@
-package com.easydorm.easydorm.launch;
+package com.easydorm.easydorm.launch.activity;
 
 import androidx.fragment.app.Fragment;
 
@@ -7,11 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.launch.fragment.GuideFragment;
-import com.easydorm.easydorm.main.MainActivity;
 import com.github.paolorotolo.appintro.AppIntro;
 
 public class GuideActivity extends AppIntro {

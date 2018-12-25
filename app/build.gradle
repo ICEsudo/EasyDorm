@@ -28,40 +28,51 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.0"
+        versionName "0.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
             minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
         }
         release {
             minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     productFlavors {
         develop {
+            buildConfigField "int", "ENV_TYPE", "0"
             manifestPlaceholders = [
                     app_name: "易舍(开发版)"
             ]
         }
         product {
+            buildConfigField "int", "ENV_TYPE", "1"
             manifestPlaceholders = [
                     app_name: "易舍"
             ]
         }
     }
-    applicationVariants.all {
-        applicationVariants.all { variant ->
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def gitVersion = gitVersionCode()
             if (variant.buildType.name == 'release') {
-                variant.outputs.each { output ->
-                    def gitVersion = gitVersionCode()
-                    output.versionNameOverride = "v0.0.3." + gitVersion + "_" + getVersionTime()
-                    output.versionCodeOverride = gitVersion.toInteger()
-                }
+                output.versionNameOverride = "v${variant.versionName}.${gitVersion}"
+                output.versionCodeOverride = gitVersion.toInteger()
             }
+        }
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            def gitVersion = gitVersionCode()
+            def versionTime = getVersionTime()
+            outputFileName = "EDorm_${variant.buildType.name}_v${variant.versionName}.${gitVersion}_${versionTime}.apk"
         }
     }
 }
@@ -71,6 +82,10 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'com.android.support:preference-v7:28.1.0'
+
+    //build
+    implementation 'com.meituan.android.walle:library:1.1.6'
 
     //network and json
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'

@@ -1,4 +1,4 @@
-package com.easydorm.easydorm.launch;
+package com.easydorm.easydorm.launch.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
-import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.entity.User;

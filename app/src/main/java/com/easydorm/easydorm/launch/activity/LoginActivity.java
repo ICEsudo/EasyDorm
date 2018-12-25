@@ -1,19 +1,22 @@
-package com.easydorm.easydorm;
+package com.easydorm.easydorm.launch.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.EasyDormApp;
+import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.entity.User;
@@ -27,6 +30,8 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,17 +40,21 @@ import retrofit2.Retrofit;
 
 public class LoginActivity extends BaseActivity {
 
-    private EditText idEditText, pwEditText;
-    private Button loginButton;
-    private CheckBox rememberButton;
-    private TextView forgetText;
+    @BindView(R.id.login_edit_text_id) EditText idEditText;
+    @BindView(R.id.login_edit_text_pw) EditText pwEditText;
+    @BindView(R.id.login_button_login) Button loginButton;
+    @BindView(R.id.login_button_remember) CheckBox rememberButton;
+    @BindView(R.id.login_text_forget) TextView forgetText;
+    @BindView(R.id.login_spinner) Spinner spinner;
+    @BindView(R.id.login_button_help) ImageView helpImageView;
+
     private SharedPreferences sp;
-    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
 
         initView();
         initListener();
@@ -64,12 +73,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initView() {
-        idEditText = findViewById(R.id.login_edit_text_id);
-        pwEditText = findViewById(R.id.login_edit_text_pw);
-        loginButton = findViewById(R.id.login_button_login);
-        rememberButton = findViewById(R.id.login_button_remember);
-        forgetText = findViewById(R.id.login_text_forget);
-        spinner = findViewById(R.id.login_spinner);
         TextView textView = findViewById(R.id.login_text);
         Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/login.ttf");
         textView.setTypeface(tf);
@@ -92,6 +95,12 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View view) {
                 //TODO
                 Toast.makeText(LoginActivity.this, "慢慢想别急", Toast.LENGTH_SHORT).show();
+            }
+        });
+        helpImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, HelpActivity.class));
             }
         });
     }

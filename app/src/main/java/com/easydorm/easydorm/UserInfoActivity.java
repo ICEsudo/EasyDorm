@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easydorm.easydorm.annotation.LoginRequired;
@@ -38,7 +40,9 @@ public class UserInfoActivity extends BaseActivity
     private Uri imageUri;  //图片保存路径
 
 
-    private Toolbar toolbar;
+    Toolbar toolbar;
+    TextView textView;
+    ImageView toolbarIcon;
     private CircleImageView avatarView;
 
     @Override
@@ -50,23 +54,26 @@ public class UserInfoActivity extends BaseActivity
         initListener();
         initData();
 
-
-
     }
 
     private void initView() {
         toolbar = findViewById(R.id.toolbar_user_info).findViewById(R.id.toolbar_back);
         avatarView = findViewById(R.id.user_info_avatar);
-        toolbar.setTitle("返回");
+        textView = toolbar.findViewById(R.id.toolbar_back_text_title);
+        textView.setText("个人信息");
+        textView = toolbar.findViewById(R.id.toolbar_back_text_left);
+        toolbarIcon = toolbar.findViewById(R.id.toolbar_back_icon);
     }
 
     private void initListener() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        View.OnClickListener finishListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
-        });
+        };
+        textView.setOnClickListener(finishListener);
+        toolbarIcon.setOnClickListener(finishListener);
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

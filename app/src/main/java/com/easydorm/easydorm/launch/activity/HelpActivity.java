@@ -1,4 +1,4 @@
-package com.easydorm.easydorm;
+package com.easydorm.easydorm.launch.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,19 +7,22 @@ import butterknife.BindView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-public class AboutActivity extends BaseActivity {
+import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.R;
+
+public class HelpActivity extends BaseActivity {
 
     Toolbar toolbar;
     TextView textView;
     ImageView toolbarIcon;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        setContentView(R.layout.activity_help);
 
         initView();
         initListener();
@@ -27,9 +30,9 @@ public class AboutActivity extends BaseActivity {
     }
 
     private void initView() {
-        toolbar = findViewById(R.id.toolbar_about).findViewById(R.id.toolbar_back);
+        toolbar = findViewById(R.id.toolbar_help).findViewById(R.id.toolbar_back);
         textView = toolbar.findViewById(R.id.toolbar_back_text_title);
-        textView.setText("关于易舍");
+        textView.setText("帮助");
         textView = toolbar.findViewById(R.id.toolbar_back_text_left);
         toolbarIcon = toolbar.findViewById(R.id.toolbar_back_icon);
     }
@@ -44,6 +47,5 @@ public class AboutActivity extends BaseActivity {
         textView.setOnClickListener(finishListener);
         toolbarIcon.setOnClickListener(finishListener);
     }
-
 
 }

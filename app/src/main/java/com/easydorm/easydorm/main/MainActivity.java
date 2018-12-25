@@ -3,10 +3,16 @@ package com.easydorm.easydorm.main;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +23,7 @@ import com.easydorm.easydorm.UserInfoActivity;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.main.adapter.MainPagerAdapter;
+import com.easydorm.easydorm.posts.activity.WritePostActivity;
 import com.easydorm.easydorm.posts.fragment.AttentionFragment;
 import com.easydorm.easydorm.dorm.DormFragment;
 import com.easydorm.easydorm.chat.MessageFragment;
@@ -52,11 +59,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar_tab) TabLayout tabLayout;
     @BindView(R.id.view_pager_main) ViewPager viewPager;
     @BindView(R.id.text_title) TextView textView;
+
     @BindView(R.id.toolbar_menu_view) ActionMenuView actionMenuView;
     @BindView(R.id.toolbar_icon) CircleImageView toolBarIcon;
     CircleImageView userAvatarView;
     View navigationHeader;
-    PopupMenu popupMenu;
+    PopupWindow popupWindow;
+    TextView shareTextView,transactionTextView;
 
     ArrayList<Fragment> fragmentsList;
     MainPagerAdapter mainPagerAdapter;
@@ -97,8 +106,13 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         navigationHeader = navigationView.getHeaderView(0);
         userAvatarView = navigationHeader.findViewById(R.id.user_avatar);
-        popupMenu = new PopupMenu(this, actionMenuView);
         setSupportActionBar(toolbar);
+
+        View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.pop_window_up, null);
+        shareTextView = contentView.findViewById(R.id.pop_share);
+        transactionTextView = contentView.findViewById(R.id.pop_transaction);
+        popupWindow = new PopupWindow(contentView, 296, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setOutsideTouchable(true);
     }
 
     private void initListener() {
@@ -230,42 +244,31 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return onOptionsItemSelected(item);
-            }
-        });
-
         actionMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupMenu.show();
+                popupWindow.showAsDropDown(actionMenuView);
+            }
+        });
+
+        shareTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, WritePostActivity.class));
+                popupWindow.dismiss();
+            }
+        });
+
+        transactionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, WritePostActivity.class));
+                popupWindow.dismiss();
             }
         });
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        popupMenu.inflate(R.menu.toolbar_main_menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.toolbar_share:
-                //TODO
-                Toast.makeText(MainActivity.this, "这里是分享", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.toolbar_transaction:
-                //TODO
-                Toast.makeText(MainActivity.this, "这边是交易", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return true;
-    }
 
     @LoginRequired
     private void startUserInfo() {

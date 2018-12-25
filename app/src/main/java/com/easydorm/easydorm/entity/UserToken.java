@@ -1,17 +1,12 @@
 package com.easydorm.easydorm.entity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.easydorm.easydorm.EasyDormApp;
-import com.easydorm.easydorm.LoginActivity;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
 import com.easydorm.easydorm.http.URLManager;
-import com.easydorm.easydorm.main.MainActivity;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 

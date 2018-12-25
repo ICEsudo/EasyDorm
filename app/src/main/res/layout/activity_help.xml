@@ -4,14 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.easydorm.easydorm.posts.activity.PostDetailActivity">
+    tools:context="com.easydorm.easydorm.launch.activity.HelpActivity">
 
-    <include layout="@layout/toolbar_back"
-        android:id="@+id/toolbar_post_detail"
+    <include android:id="@+id/toolbar_help"
+        layout="@layout/toolbar_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

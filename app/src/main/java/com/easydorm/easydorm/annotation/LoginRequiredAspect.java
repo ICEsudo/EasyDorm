@@ -4,38 +4,19 @@ package com.easydorm.easydorm.annotation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.easydorm.easydorm.EasyDormApp;
-import com.easydorm.easydorm.LoginActivity;
+import com.easydorm.easydorm.launch.activity.LoginActivity;
 import com.easydorm.easydorm.Utils.SPUtil;
-import com.easydorm.easydorm.Utils.UserUtil;
-import com.easydorm.easydorm.entity.User;
-import com.easydorm.easydorm.entity.UserInfo;
-import com.easydorm.easydorm.entity.UserToken;
-import com.easydorm.easydorm.http.GetRequestInterface;
-import com.easydorm.easydorm.http.URLManager;
-import com.easydorm.easydorm.main.MainActivity;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
-import java.io.IOException;
-
 import androidx.fragment.app.Fragment;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 
 @Aspect

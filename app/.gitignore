@@ -1,4 +1,8 @@
 /build
+/libs
 *.iml
+
+
+# apk
 /develop
-/release
+/product

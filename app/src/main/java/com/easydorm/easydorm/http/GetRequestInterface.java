@@ -1,5 +1,7 @@
 package com.easydorm.easydorm.http;
 
+import com.easydorm.easydorm.entity.BaseResponse;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -10,7 +12,7 @@ public interface GetRequestInterface {
 
 
     @GET("login")
-    Call<ResponseBody> login(
+    Call<BaseResponse> login(
             @Query("username") String username,
             @Query("password") String password,
             @Query("level") int level
@@ -18,7 +20,7 @@ public interface GetRequestInterface {
 
 
     @GET("refresh")
-    Call<ResponseBody> refreshToken(
+    Call<BaseResponse> refreshToken(
             @Header("refresh_token") String refreshToken
     );
 

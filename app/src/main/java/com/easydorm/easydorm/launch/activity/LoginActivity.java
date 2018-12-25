@@ -19,6 +19,7 @@ import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
 import com.easydorm.easydorm.entity.UserToken;
@@ -37,6 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends BaseActivity {
 
@@ -123,41 +125,35 @@ public class LoginActivity extends BaseActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URLManager.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
 
-        Call<ResponseBody> call = getRequestInterface.login(id, pw, level);
+        Call<BaseResponse> call = getRequestInterface.login(id, pw, level);
 
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<BaseResponse>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
 
-                try {
-                    if(response.body() == null) {
-                        Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
-                    } else {
-                        String str = new String(response.body().bytes());
-                        JsonObject jsonObject = new JsonParser().parse(str).getAsJsonObject();
-                        Toast.makeText(context, jsonObject.get("message").getAsString(), Toast.LENGTH_SHORT).show();
-                        if(jsonObject.get("code").getAsInt() == 1) {
-                            String refreshToken = response.headers().get("refresh_token");
-                            String accessToken = response.headers().get("access_token");
-                            EasyDormApp.setUser(new User(new UserToken(accessToken, refreshToken), new UserInfo(level)));
-                            save();
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            finish();
-                        }
+                if(response.body() == null) {
+                    Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    if(response.body().getCode() == 1) {
+                        String refreshToken = response.headers().get("refresh_token");
+                        String accessToken = response.headers().get("access_token");
+                        EasyDormApp.setUser(new User(new UserToken(accessToken, refreshToken), new UserInfo(level)));
+                        save();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(context, "未知错误", Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
                 Toast.makeText(context, "请求失败", Toast.LENGTH_SHORT).show();
             }
         });

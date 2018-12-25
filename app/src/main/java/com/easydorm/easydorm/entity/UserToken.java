@@ -7,6 +7,7 @@ import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
 import com.easydorm.easydorm.http.URLManager;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -17,6 +18,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserToken {
     private String accessToken;
@@ -37,17 +39,20 @@ public class UserToken {
     private boolean refresh() {
         result = false;
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(URLManager.baseUrl).build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URLManager.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
 
-        Call<ResponseBody> call = getRequestInterface.refreshToken(refreshToken);
+        Call<BaseResponse> call = getRequestInterface.refreshToken(refreshToken);
 
         Log.d("token", "try refresh token");
 
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<BaseResponse>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 String access = response.headers().get("access_token");
                 String ref = response.headers().get("refresh_token");
                 if(ref != null) refreshToken = ref;
@@ -61,7 +66,7 @@ public class UserToken {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
                 Log.d("token", "refresh failed");
             }
         });
@@ -82,37 +87,39 @@ public class UserToken {
         } else {
             //TODO check
 
-            Retrofit retrofit = new Retrofit.Builder().baseUrl(URLManager.baseUrl).build();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(URLManager.baseUrl)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
             PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
-            Call<ResponseBody> call = postRequestInterface.checkToken(accessToken);
-            call.enqueue(new Callback<ResponseBody>() {
+            Call<BaseResponse> call = postRequestInterface.checkToken(accessToken);
+            call.enqueue(new Callback<BaseResponse>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
 
-                    try {
-                        if(response.body() == null) {
-                            Log.d("token", "check response is null");
-                        } else {
-                            String str = new String(response.body().bytes());
-                            JsonObject jsonObject = new JsonParser().parse(str).getAsJsonObject();
-                            int code = jsonObject.get("code").getAsInt();
-                            if(code == 1) {
+                    if(response.body() == null) {
+                        Log.d("token", "check response is null");
+                    } else {
+                        switch (response.body().getCode()) {
+                            case 1:
                                 Log.d("token", "check success");
                                 result = true;
-                            } else if(code == 2) {
+                                break;
+                            case 2:
                                 Log.d("token", "check failed");
-                            } else {
+                                break;
+                            case 3:
                                 Log.d("token", "check token is expired");
                                 result = refresh();
-                            }
+                                break;
+                            default:
+
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(Call<BaseResponse> call, Throwable t) {
                     Log.d("token", "check request failed");
                 }
             });

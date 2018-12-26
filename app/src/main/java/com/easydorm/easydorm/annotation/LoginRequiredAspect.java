@@ -22,7 +22,7 @@ import androidx.fragment.app.Fragment;
 @Aspect
 public class LoginRequiredAspect {
 
-    private Context context;
+    private Context context = EasyDormApp.getContext();
     private Activity activity;
 
 
@@ -35,8 +35,6 @@ public class LoginRequiredAspect {
     @Around("allExecution() && @annotation(loginRequired)")
     public void requireLogin(final ProceedingJoinPoint proceedingJoinPoint, final LoginRequired loginRequired) {
         Log.d("Annotation", ">>>>>>>>>>>LoginRequired");
-
-        context = EasyDormApp.getContext();
 
         Object target = proceedingJoinPoint.getTarget();
         activity = null;

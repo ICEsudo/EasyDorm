@@ -3,17 +3,11 @@ package com.easydorm.easydorm.entity;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
-import com.easydorm.easydorm.http.URLManager;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,7 +34,7 @@ public class UserToken {
         result = false;
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLManager.baseUrl)
+                .baseUrl(Constants.Url.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -88,7 +82,7 @@ public class UserToken {
             //TODO check
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(URLManager.baseUrl)
+                    .baseUrl(Constants.Url.baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);

@@ -8,13 +8,17 @@ public class UserInfo {
 
     private String nickName;
     private int userType;
+    private String avatarPath;
+
     private SharedPreferences sp;
+
 
     public UserInfo(int userType) {
         this.userType = userType;
         sp = SPUtil.getUserInfo();
         saveUserInfo();
     }
+
 
     public int getUserType() {
         return userType;
@@ -31,6 +35,15 @@ public class UserInfo {
 
     private void saveUserInfo() {
         sp.edit().putInt("userType", userType).apply();
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
+        sp.edit().putString("avatarPath", avatarPath).apply();
     }
 
 }

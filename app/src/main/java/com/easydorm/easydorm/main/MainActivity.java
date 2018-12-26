@@ -16,11 +16,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.easydorm.easydorm.AboutActivity;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.UserInfoActivity;
 import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.main.adapter.MainPagerAdapter;
 import com.easydorm.easydorm.posts.activity.WritePostActivity;
@@ -99,6 +101,7 @@ public class MainActivity extends BaseActivity {
         mainPagerAdapter.setListViews(fragmentsList);
         viewPager.setAdapter(mainPagerAdapter);
 
+
     }
 
 
@@ -113,6 +116,10 @@ public class MainActivity extends BaseActivity {
         transactionTextView = contentView.findViewById(R.id.pop_transaction);
         popupWindow = new PopupWindow(contentView, 296, ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setOutsideTouchable(true);
+
+
+
+
     }
 
     private void initListener() {
@@ -120,7 +127,7 @@ public class MainActivity extends BaseActivity {
         userAvatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "别点我>_<", Toast.LENGTH_SHORT).show();
+                ToastUtil.toast(">_<");
                 //TODO
             }
         });
@@ -140,7 +147,7 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(MainActivity.this, AboutActivity.class));
                         break;
                     default:
-                        Toast.makeText(MainActivity.this, "别点啦！还没做呢", Toast.LENGTH_SHORT).show();
+                        ToastUtil.toast("还没做");
                 }
                 return true;
             }
@@ -275,6 +282,16 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String avatarPath = sp.getString("avatarPath", "");
+        if(avatarPath != null && !avatarPath.equals("")) {
+            Glide.with(this).load(avatarPath).into(userAvatarView);
+            Glide.with(this).load(avatarPath).into(toolBarIcon);
+        }
+    }
 
     @Override
     protected void onDestroy() {

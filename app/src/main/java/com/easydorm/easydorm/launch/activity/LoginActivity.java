@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
@@ -24,16 +25,10 @@ import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
 import com.easydorm.easydorm.entity.UserToken;
 import com.easydorm.easydorm.http.GetRequestInterface;
-import com.easydorm.easydorm.http.URLManager;
 import com.easydorm.easydorm.main.MainActivity;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -124,7 +119,7 @@ public class LoginActivity extends BaseActivity {
     public void login(final Context context, String id, String pw, final int level) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLManager.baseUrl)
+                .baseUrl(Constants.Url.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

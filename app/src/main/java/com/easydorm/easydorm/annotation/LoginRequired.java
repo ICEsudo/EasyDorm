@@ -12,7 +12,4 @@ public @interface LoginRequired {
 
     int userType() default 0;
 
-    String toastStr() default "未登录,请先登录";
-
-
 }

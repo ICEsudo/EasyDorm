@@ -89,22 +89,31 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'com.android.support:preference-v7:28.1.0'
 
-    //build
+    //walle build
     implementation 'com.meituan.android.walle:library:1.1.6'
 
-    //network and json
+    //network
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
-    //view
+    //permission
+    implementation 'pub.devrel:easypermissions:2.0.0'
+
+    //CircleImageView
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    //takePhoto
     implementation 'org.devio.takephoto:takephoto_library:4.1.0'
+
+    //glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+
+    //BaseRecyclerViewAdapterHelper
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.31'
 
-    //app intro
+    //app introduction
     implementation 'com.github.paolorotolo:appintro:4.1.0'
 
     //aspect
@@ -113,15 +122,15 @@ dependencies {
     //log
     implementation 'com.orhanobut:logger:2.2.0'
 
-    //annotation
+    //butterknife
     implementation 'com.jakewharton:butterknife:9.0.0-rc3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc3'
 
-    //rx
+    //rxjava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
 
-    //debug
+    //debug OOM
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
 

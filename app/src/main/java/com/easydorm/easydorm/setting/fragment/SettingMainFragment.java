@@ -1,6 +1,7 @@
 package com.easydorm.easydorm.setting.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,6 +9,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import androidx.preference.Preference;
 
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.launch.activity.LoginActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.SPUtil;
@@ -37,12 +39,10 @@ public class SettingMainFragment extends PreferenceFragmentCompat {
         logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                SettingActivity activity = ((SettingActivity) getActivity());
-                if(activity !=null) {
-                    activity.finishAllActivity();
+                Context context = getActivity();
+                if(context != null) {
+                    ActivityCollector.finishToLoginActivity(context);
                 }
-                SPUtil.getUserInfo().edit().putBoolean("isLogined", false).apply();
                 return true;
             }
         });

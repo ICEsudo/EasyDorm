@@ -28,6 +28,8 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Log.d("life", "Splash start");
 
+        EasyDormApp.setUser(new User());
+
         sp = SPUtil.getAppConstants();
         if(sp.getBoolean("isFirstLaunch", true)) {
             startActivity(new Intent(SplashActivity.this, GuideActivity.class));
@@ -35,7 +37,7 @@ public class SplashActivity extends BaseActivity {
             return;
         }
 
-        initUser();
+
 
         setContentView(R.layout.activity_splash);
 
@@ -46,16 +48,6 @@ public class SplashActivity extends BaseActivity {
         init();
 
     }
-
-    private void initUser() {
-        sp = SPUtil.getUserInfo();
-        UserToken userToken = new UserToken(
-                sp.getString("accessToken", ""),
-                sp.getString("refreshToken", ""));
-        UserInfo userInfo = new UserInfo(sp.getInt("userType", 0));
-        EasyDormApp.setUser(new User(userToken, userInfo));
-    }
-
 
     private void init() {
         try {
@@ -79,7 +71,7 @@ public class SplashActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             if(msg.what == 1) {
-                if(SPUtil.getUserInfo().getBoolean("isLogined", false)) {
+                if(EasyDormApp.getUser().getUserInfo().isLogined()) {
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));

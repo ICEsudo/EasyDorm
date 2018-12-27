@@ -19,8 +19,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.easydorm.easydorm.AboutActivity;
 import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.UserInfoActivity;
+import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
@@ -71,7 +74,6 @@ public class MainActivity extends BaseActivity {
 
     ArrayList<Fragment> fragmentsList;
     MainPagerAdapter mainPagerAdapter;
-    SharedPreferences sp;
 
 
     @Override
@@ -79,7 +81,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        addActivity(this);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -88,7 +90,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initData() {
-        sp = SPUtil.getUserInfo();
+        NetWorkUtil.checkNetWork(this);
 
         fragmentsList = new ArrayList<>();
         fragmentsList.add(new RecommendFragment());
@@ -286,7 +288,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String avatarPath = sp.getString("avatarPath", "");
+        String avatarPath = EasyDormApp.getUser().getUserInfo().getAvatarPath();
         if(avatarPath != null && !avatarPath.equals("")) {
             Glide.with(this).load(avatarPath).into(userAvatarView);
             Glide.with(this).load(avatarPath).into(toolBarIcon);
@@ -296,6 +298,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        removeActivity(this);
+        ActivityCollector.removeActivity(this);
     }
 }

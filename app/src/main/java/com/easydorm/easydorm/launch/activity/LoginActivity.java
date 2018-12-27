@@ -19,6 +19,7 @@ import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.MD5Util;
+import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
@@ -41,11 +42,11 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.login_edit_text_pw) EditText pwEditText;
     @BindView(R.id.login_button_login) Button loginButton;
     @BindView(R.id.login_button_remember) CheckBox rememberButton;
+    @BindView(R.id.login_text_remember) TextView rememberText;
     @BindView(R.id.login_text_forget) TextView forgetText;
     @BindView(R.id.login_spinner) Spinner spinner;
     @BindView(R.id.login_button_help) ImageView helpImageView;
 
-    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +61,13 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initData() {
-        sp = SPUtil.getUserInfo();
-        rememberButton.setChecked(sp.getBoolean("rememberPassword", false));
+        NetWorkUtil.checkNetWork(this);
+        UserInfo userInfo = EasyDormApp.getUser().getUserInfo();
+        rememberButton.setChecked(userInfo.isPWRemembered());
         if(rememberButton.isChecked()) {
-            idEditText.setText(sp.getString("userId", ""));
-            pwEditText.setText(sp.getString("password", ""));
-            spinner.setSelection(sp.getInt("level", 0));
+            idEditText.setText(userInfo.getUserId());
+            pwEditText.setText(userInfo.getPassword());
+            spinner.setSelection(userInfo.getUserType());
         }
     }
 
@@ -85,6 +87,13 @@ public class LoginActivity extends BaseActivity {
                 if(checkInput(id, pw)) {
                     login(LoginActivity.this, id, MD5Util.encodeToHex(pw), level);
                 }
+            }
+        });
+        rememberText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(rememberButton.isChecked()) rememberButton.setChecked(false);
+                else rememberButton.setChecked(true);
             }
         });
         forgetText.setOnClickListener(new View.OnClickListener() {
@@ -138,8 +147,14 @@ public class LoginActivity extends BaseActivity {
                     if(response.body().getCode() == 1) {
                         String refreshToken = response.headers().get("refresh_token");
                         String accessToken = response.headers().get("access_token");
-                        EasyDormApp.setUser(new User(new UserToken(accessToken, refreshToken), new UserInfo(level)));
-                        save();
+                        EasyDormApp.setUser(new User())
+                                .setUserToken(new UserToken(accessToken, refreshToken))
+                                .setUserInfo(new UserInfo(level));
+                        EasyDormApp.getUser().getUserInfo()
+                                .setUserId(idEditText.getText().toString())
+                                .setPassword(pwEditText.getText().toString())
+                                .setLogined(true)
+                                .setPWRemembered(rememberButton.isChecked());
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
@@ -155,14 +170,5 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    public void save() {
-        String id = idEditText.getText().toString();
-        String pw = pwEditText.getText().toString();
-        sp.edit().putString("userId", id)
-                .putString("password", pw)
-                .putBoolean("isLogined", true)
-                .putBoolean("rememberPassword", rememberButton.isChecked())
-                .apply();
-    }
 }
 

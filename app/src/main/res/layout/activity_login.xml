@@ -96,16 +96,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/remember_password"
         android:button="@drawable/check_box_selector"
         app:layout_constraintStart_toStartOf="@+id/login_edit_text_pw"
+        app:layout_constraintTop_toBottomOf="@+id/login_edit_text_pw" />
+
+    <TextView
+        android:id="@+id/login_text_remember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="10dp"
+        android:button="@drawable/check_box_selector"
+        android:text="@string/remember_password"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/login_button_remember"
         app:layout_constraintTop_toBottomOf="@+id/login_edit_text_pw" />
 
     <TextView
         android:id="@+id/login_text_forget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:text="@string/forget_password"
         android:textAllCaps="false"
         android:textSize="14sp"
@@ -115,8 +128,8 @@
 
     <ImageView
         android:id="@+id/login_button_help"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         android:src="@drawable/help___px"

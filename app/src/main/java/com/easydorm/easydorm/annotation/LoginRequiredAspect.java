@@ -44,7 +44,7 @@ public class LoginRequiredAspect {
             activity = ((Fragment) target).getActivity();
         }
 
-        if(SPUtil.getUserInfo().getBoolean("isLogined", false)) {
+        if(EasyDormApp.getUser().getUserInfo().isLogined()) {
 //            if(EasyDormApp.getUser().getToken().checkToken()) {
                 try {
                     proceedingJoinPoint.proceed();

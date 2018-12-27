@@ -5,21 +5,26 @@ public class User {
     private UserInfo userInfo;
     private UserToken userToken;
 
-    public User(UserToken userToken, UserInfo userInfo) {
-        this.userToken = userToken;
-        this.userInfo = userInfo;
+    public User() {
+        userInfo = new UserInfo();
+        userToken = new UserToken();
     }
 
-    public boolean updateUserInfo(UserInfo userInfo) {
+    public User setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
-        return true;
+        return this;
     }
 
     public UserInfo getUserInfo() {
         return userInfo;
     }
 
-    public UserToken getToken() {
+    public User setUserToken(UserToken userToken) {
+        this.userToken = userToken;
+        return this;
+    }
+
+    public UserToken getUserToken() {
         return userToken;
     }
 

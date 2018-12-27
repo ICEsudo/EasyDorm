@@ -30,8 +30,6 @@ public class EasyDormApp extends Application {
         //for logger
         Logger.addLogAdapter(new AndroidLogAdapter());
 
-
-
     }
 
     public static Context getContext() {
@@ -42,8 +40,9 @@ public class EasyDormApp extends Application {
         return user;
     }
 
-    public static void setUser(User user) {
+    public static User setUser(User user) {
         EasyDormApp.user = user;
+        return user;
     }
 
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.setting.fragment.SettingMainFragment;
 
@@ -23,7 +24,7 @@ public class SettingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        addActivity(this);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -54,6 +55,6 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        removeActivity(this);
+        ActivityCollector.removeActivity(this);
     }
 }

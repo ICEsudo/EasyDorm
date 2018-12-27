@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.orhanobut.logger.Logger;
@@ -60,12 +61,11 @@ public class UserInfoActivity extends BaseActivity
 
     private InvokeParam invokeParam;
 
-    SharedPreferences sp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -131,7 +131,6 @@ public class UserInfoActivity extends BaseActivity
 
 
     private void initData() {
-        sp = SPUtil.getUserInfo();
         takePhoto = getTakePhoto();
         cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(false).create();
         compressConfig=new CompressConfig.Builder().setMaxSize(50*1024).setMaxPixel(800).create();
@@ -162,13 +161,6 @@ public class UserInfoActivity extends BaseActivity
             takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
         }
         return takePhoto;
-    }
-
-
-    void setAvatar(Bitmap bitmap) {
-        if(bitmap != null) {
-            avatarView.setImageBitmap(bitmap);
-        }
     }
 
 
@@ -208,7 +200,8 @@ public class UserInfoActivity extends BaseActivity
     public void takeSuccess(TResult result) {
         String iconPath = result.getImage().getOriginalPath();
         Glide.with(this).load(iconPath).into(avatarView);
-        SPUtil.getUserInfo().edit().putString("avatarPath", iconPath).apply();
+        EasyDormApp.getUser().getUserInfo().setAvatarPath(iconPath);
+
     }
 
     @Override
@@ -233,9 +226,16 @@ public class UserInfoActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        String avatarPath = sp.getString("avatarPath", "");
+        String avatarPath = EasyDormApp.getUser().getUserInfo().getAvatarPath();
         if(avatarPath != null && !avatarPath.equals("")) {
             Glide.with(this).load(avatarPath).into(avatarView);
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

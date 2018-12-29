@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 
 public class HelpActivity extends BaseActivity {
 
@@ -23,6 +24,7 @@ public class HelpActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -48,4 +50,9 @@ public class HelpActivity extends BaseActivity {
         toolbarIcon.setOnClickListener(finishListener);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
 }

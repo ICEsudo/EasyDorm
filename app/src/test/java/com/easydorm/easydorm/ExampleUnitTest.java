@@ -155,37 +155,5 @@ public class ExampleUnitTest {
         }
     }
 
-    @Test
-    public void interceptorTest() {
-
-        loginTest();
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new TokenInterceptor())
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.Url.baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
-
-        Call<BaseResponse> call = postRequestInterface.checkToken(accessToken);
-
-        try {
-            Response<BaseResponse> response =  call.execute();
-            if(response.body() == null) {
-                System.out.println("interceptorTest : response body is null");
-                System.out.println("interceptorTest : "+response.code());
-            } else {
-                System.out.println("interceptorTest : "+response.body().getMessage());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }

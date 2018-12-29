@@ -17,7 +17,9 @@ import android.widget.Toast;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.Constants;
+import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.ImageUtil;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.NetWorkUtil;
@@ -53,6 +55,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ActivityCollector.addActivity(this);
         ButterKnife.bind(this);
 
         initView();
@@ -128,13 +131,8 @@ public class LoginActivity extends BaseActivity {
 
     public void login(final Context context, String id, String pw, final int level) {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.Url.baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseUrl, null);
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
-
         Call<BaseResponse> call = getRequestInterface.login(id, pw, level);
 
         call.enqueue(new Callback<BaseResponse>() {
@@ -173,5 +171,10 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
 }
 

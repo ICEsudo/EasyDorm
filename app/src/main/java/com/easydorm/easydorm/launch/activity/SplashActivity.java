@@ -11,9 +11,9 @@ import android.view.WindowManager;
 import com.bumptech.glide.Glide;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.ImageUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
-import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
 import com.easydorm.easydorm.entity.UserToken;
@@ -28,7 +28,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("life", "Splash start");
+        ActivityCollector.addActivity(this);
 
         EasyDormApp.setUser(new User());
 
@@ -38,8 +38,6 @@ public class SplashActivity extends BaseActivity {
             finish();
             return;
         }
-
-
 
         setContentView(R.layout.activity_splash);
 
@@ -58,7 +56,6 @@ public class SplashActivity extends BaseActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.d("life", "Splash end");
         myHandle.sendEmptyMessage(1);
     }
 
@@ -80,5 +77,6 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

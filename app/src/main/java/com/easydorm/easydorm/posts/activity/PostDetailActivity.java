@@ -10,6 +10,7 @@ import android.widget.Toolbar;
 
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 
 public class PostDetailActivity extends BaseActivity {
 
@@ -21,6 +22,7 @@ public class PostDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -44,5 +46,11 @@ public class PostDetailActivity extends BaseActivity {
         };
         textView.setOnClickListener(finishListener);
         toolbarIcon.setOnClickListener(finishListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

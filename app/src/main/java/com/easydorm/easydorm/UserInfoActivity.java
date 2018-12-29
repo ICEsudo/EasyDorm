@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -35,11 +36,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.Constants;
+import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.StringUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.http.PostRequestInterface;
+import com.easydorm.easydorm.http.TokenInterceptor;
 import com.orhanobut.logger.Logger;
 
 
@@ -242,19 +245,12 @@ public class UserInfoActivity extends BaseActivity
 
         User user = EasyDormApp.getUser();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.Url.baseImage)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseImage);
         PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
 
         File file = new File(iconPath);
-
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
         String fileName = StringUtil.makeFileName(user.getUserInfo().getUserId(), file.getName());
-
         MultipartBody.Part avatar = MultipartBody.Part.createFormData("file", fileName, requestBody);
 
         Call<ResponseBody> call = postRequestInterface.uploadFile(user.getUserToken().getAccessToken(), avatar);

@@ -20,4 +20,6 @@ public class NetWorkUtil {
         return networkInfo != null && networkInfo.isConnected();
     }
 
+
+
 }

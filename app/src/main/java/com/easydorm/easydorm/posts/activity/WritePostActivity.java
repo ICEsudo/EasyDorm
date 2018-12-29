@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 
 public class WritePostActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class WritePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_post);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -43,5 +45,11 @@ public class WritePostActivity extends AppCompatActivity {
         };
         textView.setOnClickListener(finishListener);
         toolbarIcon.setOnClickListener(finishListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

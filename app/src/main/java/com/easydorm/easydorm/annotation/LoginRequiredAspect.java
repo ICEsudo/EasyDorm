@@ -56,50 +56,13 @@ public class LoginRequiredAspect {
             activity = ((Fragment) target).getActivity();
         }
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new TokenInterceptor())
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.Url.baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
-
-        Call<BaseResponse> call = postRequestInterface.checkToken(EasyDormApp.getUser().getUserToken().getAccessToken());
-
-        call.enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if(response.body() == null) {
-                    Log.d("token", "body is null");
-                } else {
-                    Log.d("token", response.body().getMessage());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse> call, Throwable t) {
-
-            }
-        });
-
         if(EasyDormApp.getUser().getUserInfo().isLogined()) {
-//            if(EasyDormApp.getUser().getToken().checkToken()) {
-                try {
-                    proceedingJoinPoint.proceed();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-//            } else {
-//                Toast.makeText(context, "登录信息已过期", Toast.LENGTH_SHORT).show();
-//                if (activity != null) {
-//                    Intent intent = new Intent(activity, LoginActivity.class);
-//                    activity.startActivity(intent);
-//                }
-//            }
+            EasyDormApp.getUser().getUserToken().checkToken();
+            try {
+                proceedingJoinPoint.proceed();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
         } else {
             Toast.makeText(context, "未登录", Toast.LENGTH_SHORT).show();
             if (activity != null) {

@@ -39,10 +39,7 @@ public class SettingMainFragment extends PreferenceFragmentCompat {
         logout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Context context = getActivity();
-                if(context != null) {
-                    ActivityCollector.finishToLoginActivity(context);
-                }
+                ActivityCollector.finishToLoginActivity();
                 return true;
             }
         });

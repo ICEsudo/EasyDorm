@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.easydorm.easydorm.Utils.ActivityCollector;
+
 public class AboutActivity extends BaseActivity {
 
     Toolbar toolbar;
@@ -20,6 +22,7 @@ public class AboutActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        ActivityCollector.addActivity(this);
 
         initView();
         initListener();
@@ -45,5 +48,9 @@ public class AboutActivity extends BaseActivity {
         toolbarIcon.setOnClickListener(finishListener);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
+    }
 }

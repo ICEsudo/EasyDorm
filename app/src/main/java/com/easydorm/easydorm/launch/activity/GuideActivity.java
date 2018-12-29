@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.launch.fragment.GuideFragment;
 import com.github.paolorotolo.appintro.AppIntro;
@@ -19,6 +20,7 @@ public class GuideActivity extends AppIntro {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(this);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
@@ -64,5 +66,11 @@ public class GuideActivity extends AppIntro {
         super.onDonePressed(currentFragment);
         startActivity(new Intent(GuideActivity.this, LoginActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

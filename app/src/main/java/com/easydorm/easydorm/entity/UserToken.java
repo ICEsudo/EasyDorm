@@ -5,14 +5,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.Constants;
+import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.http.GetRequestInterface;
+import com.easydorm.easydorm.http.PostRequestInterface;
+import com.easydorm.easydorm.http.TokenInterceptor;
 
 import java.io.IOException;
 
 import androidx.annotation.NonNull;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,7 +30,6 @@ public class UserToken {
     private String refreshToken;
 
     private SharedPreferences sp = SPUtil.getUserInfo();
-
 
     public UserToken() {
 
@@ -62,12 +66,7 @@ public class UserToken {
 
 
     public void refreshToken() {
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.Url.baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseUrl, null);
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
 
         Call<BaseResponse> call = getRequestInterface.refreshToken(getRefreshToken());
@@ -79,22 +78,28 @@ public class UserToken {
                 String ref = response.headers().get("refresh_token");
                 if (ref != null) setRefreshToken(ref);
                 if (access != null) {
-                    Log.d("token", "access: " + access);
                     setAccessToken(access);
-                    Log.d("token", "refresh success");
                 }
-                if (response.body().getCode() == 2) {
-//                        ActivityCollector.finishToLoginActivity(context);
-                }
-            } else {
-//                    ActivityCollector.finishToLoginActivity(context);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Log.d("token", "refreshed :\n" + getAccessToken() + "\n" + getRefreshToken());
+    }
 
+    public void checkToken() {
+
+        PostRequestInterface postRequestInterface = HttpUtil.getPostRequestInterface();
+
+        Call<BaseResponse> call = postRequestInterface.checkToken(EasyDormApp.getUser().getUserToken().getAccessToken());
+
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) { }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) { }
+        });
     }
 
 

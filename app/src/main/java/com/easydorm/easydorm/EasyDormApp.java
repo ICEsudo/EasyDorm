@@ -3,6 +3,7 @@ package com.easydorm.easydorm;
 import android.app.Application;
 import android.content.Context;
 
+import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.entity.User;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
@@ -13,6 +14,9 @@ public class EasyDormApp extends Application {
 
     private static Context context;
     private static User user;
+
+
+    private static String curUserId;
 
     @Override
     public void onCreate() {
@@ -43,6 +47,16 @@ public class EasyDormApp extends Application {
     public static User setUser(User user) {
         EasyDormApp.user = user;
         return user;
+    }
+
+    public static String getCurUserId() {
+        curUserId = SPUtil.getAppConstants().getString("curUserId", "");
+        return curUserId;
+    }
+
+    public static void setCurUserId(String curUserId) {
+        EasyDormApp.curUserId = curUserId;
+        SPUtil.getAppConstants().edit().putString("curUserId", curUserId).apply();
     }
 
 

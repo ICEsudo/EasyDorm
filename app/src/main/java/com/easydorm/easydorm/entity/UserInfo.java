@@ -2,6 +2,8 @@ package com.easydorm.easydorm.entity;
 
 import android.content.SharedPreferences;
 
+import com.easydorm.easydorm.EasyDormApp;
+import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.SPUtil;
 
 import io.reactivex.annotations.NonNull;
@@ -106,6 +108,9 @@ public class UserInfo {
     public String getAvatarUrl() {
         if (avatarUrl == null || avatarUrl.equals("")) {
             avatarUrl = sp.getString("avatarUrl", "");
+            if (avatarUrl == null || avatarUrl.equals("")) {
+                avatarUrl = Constants.Url.baseImage + "/static/" + EasyDormApp.getCurUserId() + ".jpg";
+            }
         }
         return avatarUrl;
     }

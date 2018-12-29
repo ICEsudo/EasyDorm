@@ -1,8 +1,10 @@
 package com.easydorm.easydorm;
 
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.entity.BaseResponse;
@@ -11,6 +13,7 @@ import com.easydorm.easydorm.entity.UserInfo;
 import com.easydorm.easydorm.entity.UserToken;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
+import com.easydorm.easydorm.http.TokenInterceptor;
 import com.easydorm.easydorm.launch.activity.LoginActivity;
 import com.easydorm.easydorm.main.MainActivity;
 
@@ -21,6 +24,7 @@ import java.io.IOException;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -80,7 +84,6 @@ public class ExampleUnitTest {
 
     }
 
-
     @Test
     public void updateAvatarTest() {
 
@@ -115,6 +118,74 @@ public class ExampleUnitTest {
         }
     }
 
+    @Test
+    public void tokenRefreshTest() {
+
+        loginTest();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.Url.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
+
+        Call<BaseResponse> call = getRequestInterface.refreshToken(refreshToken);
+
+        System.out.println("tokenRefreshTest : try refresh token");
+
+        try {
+            Response<BaseResponse> response = call.execute();
+            if(response.body() != null) {
+                String access = response.headers().get("access_token");
+                String ref = response.headers().get("refresh_token");
+                if (ref != null) System.out.println("tokenRefreshTest : refresh: "+ ref.substring(130));
+                if (access != null) {
+                    System.out.println("tokenRefreshTest : access: " + access.substring(130));
+                    System.out.println("tokenRefreshTest : refresh success");
+                }
+                if (response.body().getCode() == 2) {
+                    System.out.println("tokenRefreshTest : refresh failed");
+                }
+            } else {
+                System.out.println("tokenRefreshTest : body is null");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void interceptorTest() {
+
+        loginTest();
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor())
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.Url.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
+
+        Call<BaseResponse> call = postRequestInterface.checkToken(accessToken);
+
+        try {
+            Response<BaseResponse> response =  call.execute();
+            if(response.body() == null) {
+                System.out.println("interceptorTest : response body is null");
+                System.out.println("interceptorTest : "+response.code());
+            } else {
+                System.out.println("interceptorTest : "+response.body().getMessage());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

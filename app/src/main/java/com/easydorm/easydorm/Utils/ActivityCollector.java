@@ -33,6 +33,7 @@ public class ActivityCollector {
     }
 
     public static void finishToLoginActivity(Context context) {
+        EasyDormApp.getUser().getUserInfo().setLogined(false);
         context.startActivity(new Intent(context, LoginActivity.class));
         finishAllActivity();
 //        SPUtil.clearUserInfo();

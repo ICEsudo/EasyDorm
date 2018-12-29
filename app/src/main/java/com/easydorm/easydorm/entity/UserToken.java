@@ -10,6 +10,8 @@ import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.http.GetRequestInterface;
 
+import java.io.IOException;
+
 import androidx.annotation.NonNull;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,7 +61,7 @@ public class UserToken {
     }
 
 
-    private void refresh(Context context) {
+    public void refreshToken() {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.Url.baseUrl)
@@ -70,34 +72,27 @@ public class UserToken {
 
         Call<BaseResponse> call = getRequestInterface.refreshToken(getRefreshToken());
 
-        Log.d("token", "try refresh token");
-
-        call.enqueue(new Callback<BaseResponse>() {
-            @Override
-            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                if(response.body() != null) {
-                    String access = response.headers().get("access_token");
-                    String ref = response.headers().get("refresh_token");
-                    if (ref != null) setRefreshToken(ref);
-                    if (access != null) {
-                        Log.d("token", "access: " + access);
-                        setAccessToken(access);
-                        Log.d("token", "refresh success");
-                    }
-                    if (response.body().getCode() == 2) {
-                        ActivityCollector.finishToLoginActivity(context);
-                    }
-                } else {
-                    ActivityCollector.finishToLoginActivity(context);
+        try {
+            Response<BaseResponse> response = call.execute();
+            if(response.body() != null) {
+                String access = response.headers().get("access_token");
+                String ref = response.headers().get("refresh_token");
+                if (ref != null) setRefreshToken(ref);
+                if (access != null) {
+                    Log.d("token", "access: " + access);
+                    setAccessToken(access);
+                    Log.d("token", "refresh success");
                 }
+                if (response.body().getCode() == 2) {
+//                        ActivityCollector.finishToLoginActivity(context);
+                }
+            } else {
+//                    ActivityCollector.finishToLoginActivity(context);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onFailure(Call<BaseResponse> call, Throwable t) {
-                ActivityCollector.finishToLoginActivity(context);
-                Log.d("token", "refresh failed");
-            }
-        });
         Log.d("token", "refreshed :\n" + getAccessToken() + "\n" + getRefreshToken());
 
     }

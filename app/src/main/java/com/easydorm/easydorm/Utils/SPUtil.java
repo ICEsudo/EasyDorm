@@ -9,7 +9,7 @@ public class SPUtil {
 
 
     public static SharedPreferences getUserInfo() {
-        return EasyDormApp.getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        return EasyDormApp.getContext().getSharedPreferences(EasyDormApp.getCurUserId()+"userInfo", Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getAppConstants() {
@@ -17,7 +17,7 @@ public class SPUtil {
     }
 
     public static void clearUserInfo() {
-        EasyDormApp.getContext().getSharedPreferences("userInfo", Context.MODE_PRIVATE).edit().clear().apply();
+        EasyDormApp.getContext().getSharedPreferences(EasyDormApp.getCurUserId()+"userInfo", Context.MODE_PRIVATE).edit().clear().apply();
     }
 
 }

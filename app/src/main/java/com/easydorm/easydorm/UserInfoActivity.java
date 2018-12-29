@@ -5,9 +5,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,9 +31,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.Utils.StringUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
+import com.easydorm.easydorm.entity.User;
+import com.easydorm.easydorm.http.PostRequestInterface;
 import com.orhanobut.logger.Logger;
 
 
@@ -39,6 +55,7 @@ import org.devio.takephoto.permission.PermissionManager;
 import org.devio.takephoto.permission.TakePhotoInvocationHandler;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static com.easydorm.easydorm.Utils.Constants.IntentResult.TAKE_PHOTO;
@@ -138,7 +155,8 @@ public class UserInfoActivity extends BaseActivity
     }
 
     private Uri getImageCropUri() {
-        File file=new File(Environment.getExternalStorageDirectory(), "/temp/"+System.currentTimeMillis() + ".jpg");
+        File file=new File(Environment.getExternalStorageDirectory(),
+                "/EasyDorm/" + EasyDormApp.getCurUserId() + "/avatar/" + System.currentTimeMillis() + ".jpg");
         if (!file.getParentFile().exists())file.getParentFile().mkdirs();
         return Uri.fromFile(file);
     }
@@ -199,9 +217,7 @@ public class UserInfoActivity extends BaseActivity
     @Override
     public void takeSuccess(TResult result) {
         String iconPath = result.getImage().getOriginalPath();
-        Glide.with(this).load(iconPath).into(avatarView);
-        EasyDormApp.getUser().getUserInfo().setAvatarPath(iconPath);
-
+        uploadAvatar(this, iconPath);
     }
 
     @Override
@@ -222,20 +238,71 @@ public class UserInfoActivity extends BaseActivity
         return type;
     }
 
+    public void uploadAvatar(Context context,  String iconPath) {
+
+        User user = EasyDormApp.getUser();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.Url.baseImage)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
+
+        File file = new File(iconPath);
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        String fileName = StringUtil.makeFileName(user.getUserInfo().getUserId(), file.getName());
+
+        MultipartBody.Part avatar = MultipartBody.Part.createFormData("file", fileName, requestBody);
+
+        Call<ResponseBody> call = postRequestInterface.uploadFile(user.getUserToken().getAccessToken(), avatar);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.body() != null) {
+                    try {
+                        ToastUtil.toast(response.body().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ToastUtil.toast("服务器异常");
+                }
+                if(response.code() == 200) {
+                    EasyDormApp.getUser().getUserInfo().setAvatarUrl(Constants.Url.baseImage+"/static/"+fileName).setAvatarPath(iconPath);
+                    Glide.with(context).load(iconPath).into(avatarView);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                ToastUtil.toast("请求失败");
+            }
+        });
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         String avatarPath = EasyDormApp.getUser().getUserInfo().getAvatarPath();
+        String avatarUrl = EasyDormApp.getUser().getUserInfo().getAvatarUrl();
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.mipmap.avatar)
+                .error(R.mipmap.avatar);
         if(avatarPath != null && !avatarPath.equals("")) {
-            Glide.with(this).load(avatarPath).into(avatarView);
+            Glide.with(this).load(avatarPath).apply(options).into(avatarView);
+        } else if(avatarUrl != null && !avatarUrl.equals("")) {
+            Glide.with(this).load(avatarUrl).apply(options).into(avatarView);
         }
     }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
     }
+
 }

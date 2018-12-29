@@ -8,8 +8,10 @@ import android.os.Message;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.bumptech.glide.Glide;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
+import com.easydorm.easydorm.Utils.ImageUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.entity.User;
@@ -61,12 +63,6 @@ public class SplashActivity extends BaseActivity {
     }
 
 
-    @LoginRequired
-    private void startMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
-    }
-
-
     class MyHandle extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -76,7 +72,6 @@ public class SplashActivity extends BaseActivity {
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 }
-//                startMainActivity();
                 finish();
             }
         }

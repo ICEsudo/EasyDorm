@@ -18,6 +18,7 @@ import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.Constants;
+import com.easydorm.easydorm.Utils.ImageUtil;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
@@ -145,13 +146,15 @@ public class LoginActivity extends BaseActivity {
                 } else {
                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if(response.body().getCode() == 1) {
+                        String userId = idEditText.getText().toString();
                         String refreshToken = response.headers().get("refresh_token");
                         String accessToken = response.headers().get("access_token");
+                        EasyDormApp.setCurUserId(userId);
                         EasyDormApp.setUser(new User())
                                 .setUserToken(new UserToken(accessToken, refreshToken))
                                 .setUserInfo(new UserInfo(level));
                         EasyDormApp.getUser().getUserInfo()
-                                .setUserId(idEditText.getText().toString())
+                                .setUserId(userId)
                                 .setPassword(pwEditText.getText().toString())
                                 .setLogined(true)
                                 .setPWRemembered(rememberButton.isChecked());

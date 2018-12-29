@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,16 +18,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.easydorm.easydorm.AboutActivity;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.UserInfoActivity;
 import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
+import com.easydorm.easydorm.entity.BaseResponse;
+import com.easydorm.easydorm.http.PostRequestInterface;
+import com.easydorm.easydorm.http.TokenInterceptor;
 import com.easydorm.easydorm.main.adapter.MainPagerAdapter;
 import com.easydorm.easydorm.posts.activity.WritePostActivity;
 import com.easydorm.easydorm.posts.fragment.AttentionFragment;
@@ -39,6 +46,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -53,6 +61,11 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends BaseActivity {
@@ -289,9 +302,16 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         String avatarPath = EasyDormApp.getUser().getUserInfo().getAvatarPath();
+        String avatarUrl = EasyDormApp.getUser().getUserInfo().getAvatarUrl();
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.mipmap.avatar)
+                .error(R.mipmap.avatar);
         if(avatarPath != null && !avatarPath.equals("")) {
-            Glide.with(this).load(avatarPath).into(userAvatarView);
-            Glide.with(this).load(avatarPath).into(toolBarIcon);
+            Glide.with(this).load(avatarPath).apply(options).into(userAvatarView);
+            Glide.with(this).load(avatarPath).apply(options).into(toolBarIcon);
+        } else if(avatarUrl != null && !avatarUrl.equals("")) {
+            Glide.with(this).load(avatarUrl).apply(options).into(userAvatarView);
+            Glide.with(this).load(avatarUrl).apply(options).into(toolBarIcon);
         }
     }
 

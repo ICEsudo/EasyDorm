@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -26,8 +28,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,12 +40,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.Utils.CacheUtil;
 import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.StringUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
+import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
+import com.easydorm.easydorm.entity.UserInfo;
 import com.easydorm.easydorm.http.PostRequestInterface;
 import com.easydorm.easydorm.http.TokenInterceptor;
 import com.orhanobut.logger.Logger;
@@ -59,7 +67,9 @@ import org.devio.takephoto.permission.TakePhotoInvocationHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.easydorm.easydorm.Utils.Constants.IntentResult.TAKE_PHOTO;
 import static com.easydorm.easydorm.Utils.Constants.Permission.*;
@@ -72,7 +82,12 @@ public class UserInfoActivity extends BaseActivity
     Toolbar toolbar;
     TextView textView;
     ImageView toolbarIcon;
-    private CircleImageView avatarView;
+    @BindView(R.id.user_info_avatar)
+    public CircleImageView avatarView;
+    @BindView(R.id.user_info_nick_name)
+    public EditText editNickName;
+    @BindView(R.id.tmp_button)
+    public Button button;
 
     TakePhoto takePhoto;
     private CropOptions cropOptions;
@@ -84,6 +99,7 @@ public class UserInfoActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        ButterKnife.bind(this);
         ActivityCollector.addActivity(this);
 
         initView();
@@ -93,13 +109,13 @@ public class UserInfoActivity extends BaseActivity
     }
 
     private void initView() {
+        UserInfo userInfo = EasyDormApp.getUser().getUserInfo();
         toolbar = findViewById(R.id.toolbar_user_info).findViewById(R.id.toolbar_back);
-        avatarView = findViewById(R.id.user_info_avatar);
         textView = toolbar.findViewById(R.id.toolbar_back_text_title);
         textView.setText("个人信息");
         textView = toolbar.findViewById(R.id.toolbar_back_text_left);
         toolbarIcon = toolbar.findViewById(R.id.toolbar_back_icon);
-
+        editNickName.setText(userInfo.getNickName());
     }
 
     private void initListener() {
@@ -144,6 +160,12 @@ public class UserInfoActivity extends BaseActivity
                     }
                 });
                 listDialog.show();
+            }
+        });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateUserInfo(UserInfoActivity.this, null);
             }
         });
     }
@@ -219,7 +241,7 @@ public class UserInfoActivity extends BaseActivity
     @Override
     public void takeSuccess(TResult result) {
         String iconPath = result.getImage().getOriginalPath();
-        uploadAvatar(this, iconPath);
+        updateUserInfo(this, iconPath);
     }
 
     @Override
@@ -237,43 +259,53 @@ public class UserInfoActivity extends BaseActivity
     }
 
 
-    public void uploadAvatar(Context context,  String iconPath) {
-
+    public void updateUserInfo(Context context,  String iconPath) {
         User user = EasyDormApp.getUser();
 
-        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseImage, null, null);
-        PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
+        PostRequestInterface postRequestInterface = HttpUtil.getPostRequestInterface();
 
+        if(iconPath == null) {
+            iconPath = user.getUserInfo().getAvatarPath();
+        }
         File file = new File(iconPath);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         String fileName = StringUtil.makeFileName(user.getUserInfo().getUserId(), file.getName());
-        MultipartBody.Part avatar = MultipartBody.Part.createFormData("file", fileName, requestBody);
+        MultipartBody.Part avatar = MultipartBody.Part.createFormData("picture", fileName, requestBody);
 
-        Call<ResponseBody> call = postRequestInterface.uploadFile(user.getUserToken().getAccessToken(), avatar);
+        Map<String, RequestBody> mp = new HashMap<>();
+        mp.put("nickName", RequestBody.create(null, editNickName.getText().toString()));
+        mp.put("phoneNumber", RequestBody.create(null, ""));
+        mp.put("email", RequestBody.create(null, ""));
+        mp.put("dormAddress", RequestBody.create(null, ""));
+        mp.put("introduction", RequestBody.create(null, ""));
 
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<BaseResponse> call = postRequestInterface.updateUserInfo(user.getUserToken().getAccessToken(), mp, avatar);
+
+        final String finalIconPath = iconPath;
+        call.enqueue(new Callback<BaseResponse>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.body() != null) {
-                    try {
-                        ToastUtil.toast(response.body().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                BaseResponse baseResponse = response.body();
+                if(baseResponse != null) {
+                    ToastUtil.toast(baseResponse.getMessage());
+                    if(response.code() == 200 && baseResponse.getCode() == 1) {
+                        EasyDormApp.getUser().getUserInfo().setAvatarUrl(Constants.Url.baseUrl+"/static/"+fileName).setAvatarPath(finalIconPath);
+                        user.getUserInfo().setNickName(editNickName.getText().toString());
+                        CacheUtil.clearGlideAllCache(UserInfoActivity.this);
+                        Glide.with(context).load(finalIconPath).into(avatarView);
                     }
                 } else {
                     ToastUtil.toast("服务器异常");
                 }
-                if(response.code() == 200) {
-                    EasyDormApp.getUser().getUserInfo().setAvatarUrl(Constants.Url.baseImage+"/static/"+fileName).setAvatarPath(iconPath);
-                    Glide.with(context).load(iconPath).into(avatarView);
-                }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                ToastUtil.toast("请求失败");
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+
             }
         });
+
+
     }
 
     @Override
@@ -295,6 +327,15 @@ public class UserInfoActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
+    }
+
+
+    public boolean checkInput() {
+        boolean result = true;
+        if(editNickName.getText().toString().equals("")) {
+            result = false;
+        }
+        return result;
     }
 
 }

@@ -92,7 +92,7 @@ public class ExampleUnitTest {
 //        loginTest();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.Url.baseImage)
+                .baseUrl(Constants.Url.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

@@ -109,7 +109,7 @@ public class UserInfo {
         if (avatarUrl == null || avatarUrl.equals("")) {
             avatarUrl = sp.getString("avatarUrl", "");
             if (avatarUrl == null || avatarUrl.equals("")) {
-                avatarUrl = Constants.Url.baseImage + "/static/" + EasyDormApp.getCurUserId() + ".jpg";
+                avatarUrl = Constants.Url.baseUrl + "/static/" + EasyDormApp.getCurUserId() + ".jpg";
             }
         }
         return avatarUrl;

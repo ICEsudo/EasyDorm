@@ -8,8 +8,6 @@ public class Constants {
 
         public static final String baseUrl = "http://119.23.30.13";
 
-        public static final String baseImage = baseUrl+":9090";
-
     }
 
 

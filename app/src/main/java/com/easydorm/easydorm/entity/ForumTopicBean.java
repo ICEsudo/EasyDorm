@@ -30,7 +30,7 @@ public class ForumTopicBean {
     private String nickName;
 
     public String getPicture() {
-        return Constants.Url.baseImage + picture;
+        return Constants.Url.baseUrl + picture;
     }
 
     public void setPicture(String picture) {

@@ -30,6 +30,7 @@ import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
+import com.easydorm.easydorm.Utils.ViewUtil;
 import com.easydorm.easydorm.annotation.LoginRequired;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.http.PostRequestInterface;
@@ -75,7 +76,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
     @BindView(R.id.drawer_layout_main) DrawerLayout drawerLayout;
     @BindView(R.id.toolbar_tab) TabLayout tabLayout;
-    @BindView(R.id.view_pager_main) ViewPager viewPager;
+    @BindView(R.id.view_pager_main) ViewPagerPlus viewPager;
     @BindView(R.id.text_title) TextView textView;
 
     @BindView(R.id.toolbar_menu_view) ActionMenuView actionMenuView;
@@ -103,7 +104,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initData() {
-        NetWorkUtil.checkNetWork(this);
+        NetWorkUtil.checkNetWork();
 
         fragmentsList = new ArrayList<>();
         fragmentsList.add(new RecommendFragment());
@@ -132,8 +133,7 @@ public class MainActivity extends BaseActivity {
         popupWindow = new PopupWindow(contentView, 296, ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setOutsideTouchable(true);
 
-
-
+//        ViewUtil.setDrawerLeftEdgeSize(this, drawerLayout, 1.0f);
 
     }
 
@@ -288,6 +288,8 @@ public class MainActivity extends BaseActivity {
                 popupWindow.dismiss();
             }
         });
+
+
 
     }
 

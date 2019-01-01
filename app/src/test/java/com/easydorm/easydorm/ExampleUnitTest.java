@@ -6,7 +6,9 @@ import android.widget.Toast;
 
 import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.Constants;
+import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.MD5Util;
+import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
@@ -74,7 +76,7 @@ public class ExampleUnitTest {
                 if(response.body().getCode() == 1) {
                     refreshToken = response.headers().get("refresh_token");
                     accessToken = response.headers().get("access_token");
-                    System.out.println("accessToken : "+accessToken.substring(130));
+                    System.out.println("accessToken : "+accessToken);
                     System.out.println("refreshToken : "+refreshToken.substring(130));
                 }
             }
@@ -149,6 +151,54 @@ public class ExampleUnitTest {
                 }
             } else {
                 System.out.println("tokenRefreshTest : body is null");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void createPostTest() {
+
+        loginTest();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.Url.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
+        Call<BaseResponse> call = postRequestInterface.createTopic(accessToken, "111", "222", 1);
+        try {
+            BaseResponse response = call.execute().body();
+            if(response != null) {
+                System.out.println(response.getMessage());
+            } else {
+                System.out.println("body null");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void getPostTest() {
+        loginTest();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.Url.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
+        Call<BaseResponse> call = getRequestInterface.getTopic(accessToken);
+        try {
+            BaseResponse response = call.execute().body();
+            if(response != null) {
+                System.out.println(response.getMessage());
+            } else {
+                System.out.println("body null");
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -31,4 +31,15 @@ public interface PostRequestInterface {
             @Part MultipartBody.Part file
     );
 
+    @FormUrlEncoded
+    @POST("createTopic")
+    Call<BaseResponse> createTopic(
+            @Header("access_token") String token,
+            @Field("tTitle") String tTitle,
+            @Field("tContent") String tContent,
+            @Field("tType") int tType
+    );
+
+
+
 }

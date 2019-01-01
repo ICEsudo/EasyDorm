@@ -65,7 +65,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initData() {
-        NetWorkUtil.checkNetWork(this);
+        NetWorkUtil.checkNetWork();
         UserInfo userInfo = EasyDormApp.getUser().getUserInfo();
         rememberButton.setChecked(userInfo.isPWRemembered());
         if(rememberButton.isChecked()) {
@@ -131,7 +131,7 @@ public class LoginActivity extends BaseActivity {
 
     public void login(final Context context, String id, String pw, final int level) {
 
-        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseUrl, null);
+        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseUrl, null, GsonConverterFactory.create());
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
         Call<BaseResponse> call = getRequestInterface.login(id, pw, level);
 

@@ -79,7 +79,6 @@ public class UserInfoActivity extends BaseActivity
     private CompressConfig compressConfig;
     private Uri imageUri;
 
-    private InvokeParam invokeParam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,18 +233,15 @@ public class UserInfoActivity extends BaseActivity
 
     @Override
     public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
-        PermissionManager.TPermissionType type=PermissionManager.checkPermission(TContextWrap.of(this),invokeParam.getMethod());
-        if(PermissionManager.TPermissionType.WAIT.equals(type)) {
-            this.invokeParam=invokeParam;
-        }
-        return type;
+        return PermissionManager.checkPermission(TContextWrap.of(this),invokeParam.getMethod());
     }
+
 
     public void uploadAvatar(Context context,  String iconPath) {
 
         User user = EasyDormApp.getUser();
 
-        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseImage);
+        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseImage, null, null);
         PostRequestInterface postRequestInterface = retrofit.create(PostRequestInterface.class);
 
         File file = new File(iconPath);

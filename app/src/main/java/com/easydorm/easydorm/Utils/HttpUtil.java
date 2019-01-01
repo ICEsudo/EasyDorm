@@ -6,6 +6,7 @@ import com.easydorm.easydorm.http.TokenInterceptor;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -16,16 +17,22 @@ public class HttpUtil {
     }
 
     public static Retrofit getRetrofit(String url) {
+        return getRetrofit(url, GsonConverterFactory.create());
+    }
+
+    public static Retrofit getRetrofit(String url, Converter.Factory converterFactory) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new TokenInterceptor())
                 .build();
-        return getRetrofit(url, client);
+        return getRetrofit(url, client, converterFactory);
     }
 
-    public static Retrofit getRetrofit(String url, OkHttpClient client) {
+    public static Retrofit getRetrofit(String url, OkHttpClient client, Converter.Factory converterFactory) {
         Retrofit.Builder builder = new Retrofit.Builder();
-        builder.baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create());
+        builder.baseUrl(url);
+        if(converterFactory != null) {
+            builder.addConverterFactory(converterFactory);
+        }
         if(client != null) {
             builder.client(client);
         }

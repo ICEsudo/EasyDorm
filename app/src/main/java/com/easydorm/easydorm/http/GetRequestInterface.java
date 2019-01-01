@@ -25,4 +25,10 @@ public interface GetRequestInterface {
     );
 
 
+    @GET("getTopic")
+    Call<BaseResponse> getTopic(
+            @Header("access_token") String accessToken
+    );
+
+
 }

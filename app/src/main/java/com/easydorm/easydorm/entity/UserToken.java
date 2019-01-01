@@ -66,7 +66,7 @@ public class UserToken {
 
 
     public void refreshToken() {
-        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseUrl, null);
+        Retrofit retrofit = HttpUtil.getRetrofit(Constants.Url.baseUrl, null, GsonConverterFactory.create());
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
 
         Call<BaseResponse> call = getRequestInterface.refreshToken(getRefreshToken());

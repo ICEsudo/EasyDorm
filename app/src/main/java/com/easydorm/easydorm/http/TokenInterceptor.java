@@ -3,6 +3,7 @@ package com.easydorm.easydorm.http;
 
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.UserToken;
 
@@ -19,6 +20,7 @@ import okhttp3.ResponseBody;
 public class TokenInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
+        NetWorkUtil.checkNetWork();
         Request request = chain.request();
 
         Response response = chain.proceed(request);

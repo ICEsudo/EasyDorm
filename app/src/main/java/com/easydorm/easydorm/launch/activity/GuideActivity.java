@@ -42,10 +42,6 @@ public class GuideActivity extends AppIntro {
         guideFragment4.setImageView(R.mipmap.photo_6);
         addSlide(guideFragment4);
 
-        GuideFragment guideFragment5 = new GuideFragment();
-        guideFragment5.setImageView(R.mipmap.photo_7);
-        addSlide(guideFragment5);
-
         setSkipText("跳过");
         setDoneText("完成");
 

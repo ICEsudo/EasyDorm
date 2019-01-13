@@ -18,6 +18,7 @@ import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.ForumTopicBean;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.posts.adapter.PostAdapter;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +90,7 @@ public class RecommendFragment extends Fragment implements View.OnTouchListener 
     public void onResume() {
         super.onResume();
         loadPost();
+        Logger.d("loadPost");
     }
 
     @Override
@@ -148,10 +150,9 @@ public class RecommendFragment extends Fragment implements View.OnTouchListener 
                             forumTopicBean.setNickName(nickNameMap.get(String.valueOf(forumTopicBean.getTId())));
                             forumTopicBean.setPicture(pictureMap.get(String.valueOf(forumTopicBean.getTId())));
                         }
-                        postArrayList.addAll(newList);
-                        postAdapter.notifyItemRangeInserted(postArrayList.size(), newList.size());
+                        postAdapter.replaceData(newList);
                     } else {
-                        ToastUtil.toast(baseResponse.getMessage());
+                        ToastUtil.toast("获取失败");
                     }
                 } else {
                     ToastUtil.toast("服务器异常");

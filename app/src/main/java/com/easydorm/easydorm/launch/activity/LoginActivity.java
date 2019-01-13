@@ -24,6 +24,7 @@ import com.easydorm.easydorm.Utils.ImageUtil;
 import com.easydorm.easydorm.Utils.MD5Util;
 import com.easydorm.easydorm.Utils.NetWorkUtil;
 import com.easydorm.easydorm.Utils.SPUtil;
+import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
@@ -142,8 +143,9 @@ public class LoginActivity extends BaseActivity {
                 if(response.body() == null) {
                     Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if(response.body().getCode() == 1) {
+                        ToastUtil.toast("登录成功");
                         String userId = idEditText.getText().toString();
                         String refreshToken = response.headers().get("refresh_token");
                         String accessToken = response.headers().get("access_token");
@@ -158,6 +160,8 @@ public class LoginActivity extends BaseActivity {
                                 .setPWRemembered(rememberButton.isChecked());
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
+                    } else {
+                        ToastUtil.toast("登录失败");
                     }
                 }
 

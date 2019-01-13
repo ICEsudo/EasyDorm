@@ -12,6 +12,9 @@ import com.easydorm.easydorm.R;
 public class AttentionFragment extends Fragment {
 
 
+
+
+
     public AttentionFragment() {
 
     }

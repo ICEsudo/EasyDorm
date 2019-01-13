@@ -83,8 +83,8 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar_icon) CircleImageView toolBarIcon;
     CircleImageView userAvatarView;
     View navigationHeader;
-    PopupWindow popupWindow;
-    TextView shareTextView,transactionTextView;
+//    PopupWindow popupWindow;
+//    TextView shareTextView,transactionTextView;
 
     ArrayList<Fragment> fragmentsList;
     MainPagerAdapter mainPagerAdapter;
@@ -127,11 +127,11 @@ public class MainActivity extends BaseActivity {
         userAvatarView = navigationHeader.findViewById(R.id.user_avatar);
         setSupportActionBar(toolbar);
 
-        View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.pop_window_up, null);
-        shareTextView = contentView.findViewById(R.id.pop_share);
-        transactionTextView = contentView.findViewById(R.id.pop_transaction);
-        popupWindow = new PopupWindow(contentView, 296, ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setOutsideTouchable(true);
+//        View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.pop_window_up, null);
+//        shareTextView = contentView.findViewById(R.id.pop_share);
+//        transactionTextView = contentView.findViewById(R.id.pop_transaction);
+//        popupWindow = new PopupWindow(contentView, 296, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        popupWindow.setOutsideTouchable(true);
 
 //        ViewUtil.setDrawerLeftEdgeSize(this, drawerLayout, 1.0f);
 
@@ -153,7 +153,7 @@ public class MainActivity extends BaseActivity {
                 //TODO
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_user_info:
-                        startUserInfo();
+                        startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
                         break;
                     case R.id.setting:
                         startActivity(new Intent(MainActivity.this, SettingActivity.class));
@@ -269,34 +269,11 @@ public class MainActivity extends BaseActivity {
         actionMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupWindow.showAsDropDown(actionMenuView);
-            }
-        });
-
-        shareTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, WritePostActivity.class));
-                popupWindow.dismiss();
-            }
-        });
-
-        transactionTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WritePostActivity.class));
-                popupWindow.dismiss();
             }
         });
 
 
-
-    }
-
-
-    @LoginRequired
-    private void startUserInfo() {
-        startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
     }
 
 

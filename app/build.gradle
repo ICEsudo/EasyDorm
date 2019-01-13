@@ -19,6 +19,23 @@ def getVersionTime() {
 android {
     compileSdkVersion 28
     flavorDimensions "default"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                'src/main/res/layouts/activity',
+                'src/main/res/layouts/fragment',
+                'src/main/res/layouts/item',
+                'src/main/res/layouts/navigation',
+                'src/main/res/layouts/toolbar',
+                'src/main/res/layouts',
+                'src/main/res/drawables/icon',
+                'src/main/res/drawables/selector',
+                'src/main/res/drawables/background',
+                'src/main/res/drawables',
+                'src/main/res/'
+            ]
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -28,7 +45,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "0.0.4"
+        versionName "0.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -23,7 +23,7 @@ public class PostAdapter extends BaseQuickAdapter<ForumTopicBean, PostViewHolder
         helper.setText(R.id.post_user_nick_name, item.getNickName())
                 .setText(R.id.post_info, item.getTUpdatetime())
                 .setText(R.id.post_title, item.getTTitle())
-                .setText(R.id.post_text, item.getTContent())
+                .setText(R.id.post_text, item.getSummary())
                 .setText(R.id.post_agree_text, String.valueOf(item.getTGoodcount()));
 
         Glide.with(mContext).load(item.getPicture()).into((CircleImageView) helper.getView(R.id.post_user_avatar));

@@ -12,11 +12,13 @@ import android.widget.FrameLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.ForumTopicBean;
 import com.easydorm.easydorm.http.GetRequestInterface;
+import com.easydorm.easydorm.posts.activity.PostDetailActivity;
 import com.easydorm.easydorm.posts.adapter.PostAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -34,7 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class RecommendFragment extends Fragment implements View.OnTouchListener {
+public class RecommendFragment extends Fragment {
 
     @BindView(R.id.post_recommend_recycler_view)
     RecyclerView postRecommendRecyclerView;
@@ -64,9 +66,11 @@ public class RecommendFragment extends Fragment implements View.OnTouchListener 
 
         postRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
 
-        //TODO postAdapter.setEmptyView();
-
         postRecommendRecyclerView.setAdapter(postAdapter);
+
+        postAdapter.bindToRecyclerView(postRecommendRecyclerView);
+
+        postAdapter.setEmptyView(R.layout.empty_view_recommend);
 
         initListener();
 
@@ -80,6 +84,11 @@ public class RecommendFragment extends Fragment implements View.OnTouchListener 
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 //TODO load more detail
+                Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("post", postArrayList.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
@@ -91,45 +100,6 @@ public class RecommendFragment extends Fragment implements View.OnTouchListener 
         super.onResume();
         loadPost();
         Logger.d("loadPost");
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.OnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                if(e1.getX() < e2.getX()) {
-
-                }
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                return false;
-            }
-        });
-        return gestureDetector.onTouchEvent(event);
     }
 
 
@@ -151,8 +121,6 @@ public class RecommendFragment extends Fragment implements View.OnTouchListener 
                             forumTopicBean.setPicture(pictureMap.get(String.valueOf(forumTopicBean.getTId())));
                         }
                         postAdapter.replaceData(newList);
-                    } else {
-                        ToastUtil.toast("获取失败");
                     }
                 } else {
                     ToastUtil.toast("服务器异常");

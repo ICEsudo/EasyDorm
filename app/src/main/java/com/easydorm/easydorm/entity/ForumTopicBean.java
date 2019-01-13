@@ -4,7 +4,9 @@ package com.easydorm.easydorm.entity;
 import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.TimeUtil;
 
-public class ForumTopicBean {
+import java.io.Serializable;
+
+public class ForumTopicBean implements Serializable {
     /**
      * tId : 2
      * uId : 1
@@ -28,6 +30,8 @@ public class ForumTopicBean {
 
     private String picture;
     private String nickName;
+
+    private String summary;
 
     public String getPicture() {
         return Constants.Url.baseUrl + picture;
@@ -107,5 +111,16 @@ public class ForumTopicBean {
 
     public void setTContent(String tContent) {
         this.tContent = tContent;
+    }
+
+    public String getSummary() {
+        if(summary == null) summary = "";
+        if(tContent != null) summary = tContent;
+        if(summary.equals("") && summary.length() > 100) summary = summary.substring(0, 99) + "...";
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }

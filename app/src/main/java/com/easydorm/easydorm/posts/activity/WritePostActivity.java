@@ -88,9 +88,10 @@ public class WritePostActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 if (response.body() != null) {
-                    ToastUtil.toast(response.body().getMessage());
                     if(response.body().getCode() == 1) {
                         finish();
+                    } else {
+                        ToastUtil.toast("发布失败");
                     }
                 } else {
                     ToastUtil.toast("服务器异常");

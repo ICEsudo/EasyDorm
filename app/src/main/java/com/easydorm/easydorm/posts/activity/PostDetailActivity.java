@@ -2,6 +2,8 @@ package com.easydorm.easydorm.posts.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -16,7 +18,11 @@ import com.bumptech.glide.Glide;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.entity.Comment;
 import com.easydorm.easydorm.entity.ForumTopicBean;
+import com.easydorm.easydorm.posts.adapter.CommentAdapter;
+
+import java.util.ArrayList;
 
 public class PostDetailActivity extends BaseActivity {
 
@@ -29,7 +35,11 @@ public class PostDetailActivity extends BaseActivity {
     @BindView(R.id.post_detail_info) TextView postInfoText;
     @BindView(R.id.post_detail_title) TextView postTitleText;
     @BindView(R.id.post_detail_text) TextView postText;
+    @BindView(R.id.post_detail_comment_recycler_view)
+    RecyclerView commentRecyclerView;
 
+    private ArrayList<Comment> commentArrayList;
+    private CommentAdapter commentAdapter;
 
     private ForumTopicBean post;
 
@@ -60,6 +70,15 @@ public class PostDetailActivity extends BaseActivity {
         postInfoText.setText(post.getTCreatetime());
         postTitleText.setText(post.getTTitle());
         postText.setText(post.getTContent());
+
+
+        //init comments
+        commentArrayList = new ArrayList<>();
+        commentAdapter = new CommentAdapter(R.layout.item_comment, commentArrayList);
+        commentRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        commentRecyclerView.setAdapter(commentAdapter);
+        commentAdapter.bindToRecyclerView(commentRecyclerView);
+        commentAdapter.setEmptyView(R.layout.empty_view_comment);
 
     }
 

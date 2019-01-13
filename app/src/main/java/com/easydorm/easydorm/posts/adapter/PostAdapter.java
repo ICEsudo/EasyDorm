@@ -17,6 +17,14 @@ public class PostAdapter extends BaseQuickAdapter<ForumTopicBean, PostViewHolder
         super(layoutResId, data);
     }
 
+    public PostAdapter(@Nullable List<ForumTopicBean> data) {
+        super(data);
+    }
+
+    public PostAdapter(int layoutResId) {
+        super(layoutResId);
+    }
+
     @Override
     protected void convert(PostViewHolder helper, ForumTopicBean item) {
 

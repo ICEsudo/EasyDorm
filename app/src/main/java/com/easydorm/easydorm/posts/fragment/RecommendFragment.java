@@ -48,12 +48,6 @@ public class RecommendFragment extends Fragment {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -61,15 +55,12 @@ public class RecommendFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         postArrayList = new ArrayList<>();
-
         postAdapter = new PostAdapter(R.layout.item_post_card, postArrayList);
 
         postRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-
         postRecommendRecyclerView.setAdapter(postAdapter);
 
         postAdapter.bindToRecyclerView(postRecommendRecyclerView);
-
         postAdapter.setEmptyView(R.layout.empty_view_recommend);
 
         initListener();
@@ -99,7 +90,6 @@ public class RecommendFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadPost();
-        Logger.d("loadPost");
     }
 
 

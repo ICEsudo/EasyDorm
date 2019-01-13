@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_attention_framelayout"
     tools:context=".posts.fragment.AttentionFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_attention_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

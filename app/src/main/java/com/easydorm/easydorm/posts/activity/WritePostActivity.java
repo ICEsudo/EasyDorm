@@ -10,7 +10,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +29,8 @@ import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
 
+import static com.easydorm.easydorm.Utils.StringUtil.checkNotNull;
+
 public class WritePostActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -36,6 +41,8 @@ public class WritePostActivity extends AppCompatActivity {
     EditText writePostEditText;
     @BindView(R.id.write_title_edit_text)
     EditText writeTitleEditText;
+    @BindView(R.id.number_of_text)
+    TextView numberOfText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,7 @@ public class WritePostActivity extends AppCompatActivity {
         rightTextView = toolbar.findViewById(R.id.toolbar_back_text_right);
         rightTextView.setText("发布");
         toolbarIcon = toolbar.findViewById(R.id.toolbar_back_icon);
+        numberOfText.setText(String.valueOf(writePostEditText.getText().toString().length())+"字");
     }
 
     private void initListener() {
@@ -71,12 +79,77 @@ public class WritePostActivity extends AppCompatActivity {
         rightTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.toast("正在发布");
                 String title = writeTitleEditText.getText().toString();
                 String content = writePostEditText.getText().toString();
-                createNewPost(title, content, 1);
+                if(checkInput(title, content)) {
+                    ToastUtil.toast("正在发布");
+                    createNewPost(title, content, 1);
+                }
             }
         });
+        writeTitleEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() > 30) {
+                    numberOfText.setText("标题长度超出限制");
+                    numberOfText.setTextColor(Color.rgb(255, 0, 0));
+                } else {
+                    numberOfText.setText(String.valueOf(writePostEditText.getText().toString().length())+"字");
+                    numberOfText.setTextColor(Color.rgb(96, 96, 96));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        writePostEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                numberOfText.setText(String.valueOf(s.length())+"字");
+                numberOfText.setTextColor(Color.rgb(96, 96, 96));
+                if(s.length() > 20000) {
+                    numberOfText.setText("文本长度超出限制");
+                    numberOfText.setTextColor(Color.rgb(255, 0, 0));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+
+    private boolean checkInput(String title, String content) {
+        if(checkNotNull(title)) {
+            if(title.length() > 30) {
+                ToastUtil.toast("标题长度超出限制");
+            } else if(checkNotNull(content)) {
+                if(content.length() > 20000) {
+                    ToastUtil.toast("文本长度超出限制");
+                } else {
+                    return true;
+                }
+            } else {
+                ToastUtil.toast("请输入正文");
+            }
+        } else {
+            ToastUtil.toast("请输入标题");
+        }
+        return false;
     }
 
 

@@ -2,12 +2,14 @@ package com.easydorm.easydorm.posts.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.easydorm.easydorm.EasyDormApp;
@@ -74,12 +76,36 @@ public class RecommendFragment extends Fragment {
         postAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                //TODO load more detail
                 Intent intent = new Intent(getActivity(), PostDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("post", postArrayList.get(position));
                 intent.putExtras(bundle);
                 startActivity(intent);
+            }
+        });
+        postAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    //TODO
+                    case R.id.post_user_avatar:
+                    case R.id.post_user_nick_name:
+                        ToastUtil.toast("查看用户信息");
+                        break;
+                    case R.id.post_agree_icon:
+                        ImageView imageView = view.findViewById(R.id.post_agree_icon);
+                        ToastUtil.toast("点赞");
+                        break;
+                    case R.id.post_comment_icon:
+                        ToastUtil.toast("评论没做");
+                        break;
+                    case R.id.post_more:
+                        ToastUtil.toast("更多");
+                        break;
+                    case R.id.post_share:
+                        ToastUtil.toast("分享不了");
+                        break;
+                }
             }
         });
     }
@@ -122,6 +148,11 @@ public class RecommendFragment extends Fragment {
                 ToastUtil.toast("请求失败");
             }
         });
+    }
+
+
+    private void agree(int pos) {
+
     }
 
 

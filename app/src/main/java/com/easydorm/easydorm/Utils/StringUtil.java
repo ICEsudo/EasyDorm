@@ -11,4 +11,8 @@ public class StringUtil {
         return fileName;
     }
 
+    public static boolean checkNotNull(String str) {
+        return str != null && !str.equals("");
+    }
+
 }

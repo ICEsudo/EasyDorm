@@ -90,7 +90,7 @@ public class ForumTopicBean implements Serializable {
     }
 
     public String getTCreatetime() {
-        return TimeUtil.stringToString(tCreatetime);
+        return TimeUtil.stringToEasyString(tCreatetime);
     }
 
     public void setTCreatetime(String tCreatetime) {
@@ -98,7 +98,7 @@ public class ForumTopicBean implements Serializable {
     }
 
     public String getTUpdatetime() {
-        return TimeUtil.stringToString(tUpdatetime);
+        return TimeUtil.stringToEasyString(tUpdatetime);
     }
 
     public void setTUpdatetime(String tUpdatetime) {
@@ -116,7 +116,7 @@ public class ForumTopicBean implements Serializable {
     public String getSummary() {
         if(summary == null) summary = "";
         if(tContent != null) summary = tContent;
-        if(summary.equals("") && summary.length() > 100) summary = summary.substring(0, 99) + "...";
+        if(summary.length() > 100) summary = summary.substring(0, 99) + "...";
         return summary;
     }
 

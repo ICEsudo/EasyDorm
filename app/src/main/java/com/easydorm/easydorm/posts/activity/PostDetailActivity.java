@@ -10,6 +10,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,11 +31,8 @@ public class PostDetailActivity extends BaseActivity {
     TextView textView;
     ImageView toolbarIcon;
 
-    @BindView(R.id.post_detail_user_avatar) CircleImageView userAvatar;
-    @BindView(R.id.post_detail_user_nick_name) TextView nickNameText;
-    @BindView(R.id.post_detail_info) TextView postInfoText;
-    @BindView(R.id.post_detail_title) TextView postTitleText;
-    @BindView(R.id.post_detail_text) TextView postText;
+    CircleImageView userAvatar;
+    TextView nickNameText, postInfoText, postTitleText, postText, agreeCountText;
     @BindView(R.id.post_detail_comment_recycler_view)
     RecyclerView commentRecyclerView;
 
@@ -42,6 +40,8 @@ public class PostDetailActivity extends BaseActivity {
     private CommentAdapter commentAdapter;
 
     private ForumTopicBean post;
+
+    private View headerView;
 
 
     @Override
@@ -70,6 +70,7 @@ public class PostDetailActivity extends BaseActivity {
         postInfoText.setText(post.getTCreatetime());
         postTitleText.setText(post.getTTitle());
         postText.setText(post.getTContent());
+        agreeCountText.setText(String.valueOf(post.getTGoodcount()));
 
 
         //init comments
@@ -78,13 +79,28 @@ public class PostDetailActivity extends BaseActivity {
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         commentRecyclerView.setAdapter(commentAdapter);
         commentAdapter.bindToRecyclerView(commentRecyclerView);
-        commentAdapter.setEmptyView(R.layout.empty_view_comment);
+//        commentAdapter.setEmptyView(R.layout.empty_view_comment);
+        commentAdapter.addHeaderView(headerView);
+        if(commentArrayList.size() == 0) {
+            View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_view_comment, null);
+            commentAdapter.addHeaderView(emptyView);
+        }
 
     }
 
 
 
     private void initView() {
+        headerView = LayoutInflater.from(this).inflate(R.layout.post_detail_header, null);
+
+        userAvatar = headerView.findViewById(R.id.post_detail_user_avatar);
+        nickNameText = headerView.findViewById(R.id.post_detail_user_nick_name);
+        postInfoText = headerView.findViewById(R.id.post_detail_info);
+        postTitleText = headerView.findViewById(R.id.post_detail_title);
+        postText = headerView.findViewById(R.id.post_detail_text);
+        agreeCountText = headerView.findViewById(R.id.post_agree_text);
+
+
         toolbar = findViewById(R.id.toolbar_post_detail).findViewById(R.id.toolbar_back);
         textView = toolbar.findViewById(R.id.toolbar_back_text_title);
         textView.setText("帖子详情");

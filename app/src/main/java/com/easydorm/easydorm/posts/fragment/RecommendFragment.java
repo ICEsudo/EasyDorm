@@ -22,6 +22,7 @@ import com.easydorm.easydorm.entity.ForumTopicBean;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.posts.activity.PostDetailActivity;
 import com.easydorm.easydorm.posts.adapter.PostAdapter;
+import com.easydorm.easydorm.userinfo.UserInfoActivity;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -90,7 +91,9 @@ public class RecommendFragment extends Fragment {
                     //TODO
                     case R.id.post_user_avatar:
                     case R.id.post_user_nick_name:
-                        ToastUtil.toast("查看用户信息");
+                        Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                        intent.putExtra("uId", postArrayList.get(position).getUId());
+                        startActivity(intent);
                         break;
                     case R.id.post_agree_icon:
                         ImageView imageView = view.findViewById(R.id.post_agree_icon);
@@ -122,7 +125,7 @@ public class RecommendFragment extends Fragment {
     private void loadPost() {
 
         GetRequestInterface getRequestInterface = HttpUtil.getGetRequestInterface();
-        Call<BaseResponse> call = getRequestInterface.getTopic(EasyDormApp.getUser().getUserToken().getAccessToken());
+        Call<BaseResponse> call = getRequestInterface.getTopics(EasyDormApp.getUser().getUserToken().getAccessToken());
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
@@ -130,12 +133,6 @@ public class RecommendFragment extends Fragment {
                 if(baseResponse != null) {
                     if(baseResponse.getCode() == 1) {
                         List<ForumTopicBean> newList = baseResponse.getExtend().getForumTopic();
-                        HashMap<String, String> pictureMap = baseResponse.getExtend().getPicture();
-                        HashMap<String, String> nickNameMap = baseResponse.getExtend().getNickName();
-                        for(ForumTopicBean forumTopicBean : newList) {
-                            forumTopicBean.setNickName(nickNameMap.get(String.valueOf(forumTopicBean.getTId())));
-                            forumTopicBean.setPicture(pictureMap.get(String.valueOf(forumTopicBean.getTId())));
-                        }
                         postAdapter.replaceData(newList);
                     }
                 } else {
@@ -145,7 +142,7 @@ public class RecommendFragment extends Fragment {
 
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
-                ToastUtil.toast("请求失败");
+//                ToastUtil.toast("请求失败");
             }
         });
     }

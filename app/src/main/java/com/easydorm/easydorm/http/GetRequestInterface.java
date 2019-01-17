@@ -25,10 +25,22 @@ public interface GetRequestInterface {
     );
 
 
-    @GET("getTopic")
-    Call<BaseResponse> getTopic(
+    @GET("getTopics")
+    Call<BaseResponse> getTopics(
             @Header("access_token") String accessToken
     );
 
+    @GET("getTopic")
+    Call<BaseResponse> getTopic(
+            @Header("access_token") String accessToken,
+            @Query("tId") int tId
+    );
+
+
+    @GET("getUserInfo")
+    Call<BaseResponse> getUserInfo(
+            @Header("access_token") String accessToken,
+            @Query("sId") int userId
+    );
 
 }

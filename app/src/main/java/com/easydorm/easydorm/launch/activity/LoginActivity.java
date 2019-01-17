@@ -139,12 +139,12 @@ public class LoginActivity extends BaseActivity {
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-
-                if(response.body() == null) {
+                BaseResponse baseResponse = response.body();
+                if(baseResponse == null) {
                     Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
                 } else {
 //                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    if(response.body().getCode() == 1) {
+                    if(baseResponse.getCode() == 1) {
                         ToastUtil.toast("登录成功");
                         String userId = idEditText.getText().toString();
                         String refreshToken = response.headers().get("refresh_token");
@@ -155,6 +155,7 @@ public class LoginActivity extends BaseActivity {
                                 .setUserInfo(new UserInfo(level));
                         EasyDormApp.getUser().getUserInfo()
                                 .setUserId(userId)
+                                .setuId(baseResponse.getExtend().getuId())
                                 .setPassword(pwEditText.getText().toString())
                                 .setLogined(true)
                                 .setPWRemembered(rememberButton.isChecked());

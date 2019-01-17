@@ -51,6 +51,4 @@ public interface PostRequestInterface {
             @Part MultipartBody.Part picture
     );
 
-
-
 }

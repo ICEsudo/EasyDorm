@@ -1,57 +1,50 @@
-package com.easydorm.easydorm;
+package com.easydorm.easydorm.userinfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Looper;
-import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.easydorm.easydorm.BaseActivity;
+import com.easydorm.easydorm.EasyDormApp;
+import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.CacheUtil;
 import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.HttpUtil;
-import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.Utils.StringUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
+import com.easydorm.easydorm.entity.UserInfoBean;
+import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
-import com.easydorm.easydorm.http.TokenInterceptor;
-import com.orhanobut.logger.Logger;
 
 
 import org.devio.takephoto.app.TakePhoto;
@@ -66,12 +59,10 @@ import org.devio.takephoto.permission.PermissionManager;
 import org.devio.takephoto.permission.TakePhotoInvocationHandler;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.easydorm.easydorm.Utils.Constants.IntentResult.TAKE_PHOTO;
 import static com.easydorm.easydorm.Utils.Constants.Permission.*;
 
 
@@ -83,16 +74,20 @@ public class UserInfoActivity extends BaseActivity
     TextView textView;
     ImageView toolbarIcon;
     @BindView(R.id.user_info_avatar)
-    public CircleImageView avatarView;
-    @BindView(R.id.user_info_nick_name)
-    public EditText editNickName;
-    @BindView(R.id.tmp_button)
-    public Button button;
+    CircleImageView avatarView;
+    @BindView(R.id.user_info_item_nick_name_text) TextView nickNameText;
+    @BindView(R.id.user_info_item_introduction_text) TextView introductionText;
+    @BindView(R.id.user_info_item_dorm_address_text) TextView dormAdressText;
+    @BindView(R.id.user_info_item_phone_number_text) TextView phoneText;
+    @BindView(R.id.user_info_item_email_text) TextView emailText;
 
     TakePhoto takePhoto;
     private CropOptions cropOptions;
     private CompressConfig compressConfig;
     private Uri imageUri;
+
+    private UserInfoBean userInfoBean;
+    private boolean editable;
 
 
     @Override
@@ -102,9 +97,16 @@ public class UserInfoActivity extends BaseActivity
         ButterKnife.bind(this);
         ActivityCollector.addActivity(this);
 
+        Intent intent = getIntent();
+        int uId = intent.getIntExtra("uId", EasyDormApp.getUser().getUserInfo().getuId());
+        editable = uId == EasyDormApp.getUser().getUserInfo().getuId();
+
         initView();
         initListener();
+        if(editable) initPrivateListener();
         initData();
+
+        getUserInfo(this, uId);
 
     }
 
@@ -115,7 +117,6 @@ public class UserInfoActivity extends BaseActivity
         textView.setText("个人信息");
         textView = toolbar.findViewById(R.id.toolbar_back_text_left);
         toolbarIcon = toolbar.findViewById(R.id.toolbar_back_icon);
-        editNickName.setText(userInfo.getNickName());
     }
 
     private void initListener() {
@@ -127,6 +128,10 @@ public class UserInfoActivity extends BaseActivity
         };
         textView.setOnClickListener(finishListener);
         toolbarIcon.setOnClickListener(finishListener);
+
+    }
+
+    private void initPrivateListener() {
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,12 +167,6 @@ public class UserInfoActivity extends BaseActivity
                 listDialog.show();
             }
         });
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateUserInfo(UserInfoActivity.this, null);
-            }
-        });
     }
 
 
@@ -185,18 +184,15 @@ public class UserInfoActivity extends BaseActivity
         return Uri.fromFile(file);
     }
 
-
     void takePhotoFromCamera() {
         imageUri = getImageCropUri();
         takePhoto.onPickFromCaptureWithCrop(imageUri, cropOptions);
     }
 
-
     void takePhotoFromGallery() {
         imageUri = getImageCropUri();
         takePhoto.onPickFromGalleryWithCrop(imageUri, cropOptions);
     }
-
 
     public TakePhoto getTakePhoto() {
         if(takePhoto == null) {
@@ -204,7 +200,6 @@ public class UserInfoActivity extends BaseActivity
         }
         return takePhoto;
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -259,6 +254,61 @@ public class UserInfoActivity extends BaseActivity
     }
 
 
+    public void getUserInfo(Context context, int uId) {
+        GetRequestInterface getRequestInterface = HttpUtil.getGetRequestInterface();
+        Call<BaseResponse> call = getRequestInterface.getUserInfo(EasyDormApp.getUser().getUserToken().getAccessToken(), uId);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                BaseResponse baseResponse = response.body();
+                if(baseResponse != null && (userInfoBean = baseResponse.getExtend().getUserInfo()) != null) {
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (userInfoBean.getNickname() != null && !userInfoBean.getNickname().equals("")) {
+                                nickNameText.setText(userInfoBean.getNickname());
+                            }
+                            if (userInfoBean.getPicture() != null && !userInfoBean.getPicture().equals("")) {
+                                Glide.with(context).load(Constants.Url.baseUrl + userInfoBean.getPicture()).into(avatarView);
+                            }
+                            if (userInfoBean.getIntroduction() != null && !userInfoBean.getIntroduction().equals("")) {
+                                introductionText.setText(userInfoBean.getIntroduction());
+                            }
+                            if (userInfoBean.getDormaddress() != null && !userInfoBean.getDormaddress().equals("")) {
+                                if (userInfoBean.isDormaddressvisiable()) {
+                                    dormAdressText.setText(userInfoBean.getDormaddress());
+                                } else {
+                                    dormAdressText.setText("保密");
+                                }
+                            }
+                            if (userInfoBean.getPhonenumber() != null && !userInfoBean.getPhonenumber().equals("")) {
+                                if (userInfoBean.isPhonevisiable()) {
+                                    phoneText.setText(userInfoBean.getPhonenumber());
+                                } else {
+                                    phoneText.setText("保密");
+                                }
+                            }
+                            if (userInfoBean.getEmail() != null && !userInfoBean.getEmail().equals("")) {
+                                if (userInfoBean.isEmailvisiable()) {
+                                    emailText.setText(userInfoBean.getEmail());
+                                } else {
+                                    emailText.setText("保密");
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    ToastUtil.toast("服务器异常");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
     public void updateUserInfo(Context context,  String iconPath) {
         User user = EasyDormApp.getUser();
 
@@ -273,7 +323,7 @@ public class UserInfoActivity extends BaseActivity
         MultipartBody.Part avatar = MultipartBody.Part.createFormData("picture", fileName, requestBody);
 
         Map<String, RequestBody> mp = new HashMap<>();
-        mp.put("nickName", RequestBody.create(null, editNickName.getText().toString()));
+        mp.put("nickName", RequestBody.create(null, ""));
         mp.put("phoneNumber", RequestBody.create(null, ""));
         mp.put("email", RequestBody.create(null, ""));
         mp.put("dormAddress", RequestBody.create(null, ""));
@@ -290,7 +340,7 @@ public class UserInfoActivity extends BaseActivity
                     ToastUtil.toast(baseResponse.getMessage());
                     if(response.code() == 200 && baseResponse.getCode() == 1) {
                         EasyDormApp.getUser().getUserInfo().setAvatarUrl(Constants.Url.baseUrl+"/static/"+fileName).setAvatarPath(finalIconPath);
-                        user.getUserInfo().setNickName(editNickName.getText().toString());
+//                        user.getUserInfo().setNickName(editNickName.getText().toString());
                         CacheUtil.clearGlideAllCache(UserInfoActivity.this);
                         Glide.with(context).load(finalIconPath).into(avatarView);
                     }
@@ -308,20 +358,6 @@ public class UserInfoActivity extends BaseActivity
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        String avatarPath = EasyDormApp.getUser().getUserInfo().getAvatarPath();
-        String avatarUrl = EasyDormApp.getUser().getUserInfo().getAvatarUrl();
-        RequestOptions options = new RequestOptions()
-                .placeholder(R.mipmap.avatar)
-                .error(R.mipmap.avatar);
-        if(avatarPath != null && !avatarPath.equals("")) {
-            Glide.with(this).load(avatarPath).apply(options).into(avatarView);
-        } else if(avatarUrl != null && !avatarUrl.equals("")) {
-            Glide.with(this).load(avatarUrl).apply(options).into(avatarView);
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -330,12 +366,5 @@ public class UserInfoActivity extends BaseActivity
     }
 
 
-    public boolean checkInput() {
-        boolean result = true;
-        if(editNickName.getText().toString().equals("")) {
-            result = false;
-        }
-        return result;
-    }
 
 }

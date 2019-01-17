@@ -14,6 +14,7 @@ public class UserInfo {
     private String password;
     private String nickName;
     private int userType;
+    private int uId;
 
     private boolean isPWRemembered;
     private boolean isLogined;
@@ -21,14 +22,40 @@ public class UserInfo {
     private String avatarPath;
     private String avatarUrl;
 
+    private UserInfoBean userInfoBean;
+
     private SharedPreferences sp = SPUtil.getUserInfo();
 
     public UserInfo() {
+        uId = sp.getInt("uId", -1);
         setUserType(0);
     }
 
     public UserInfo(int userType) {
+        uId = sp.getInt("uId", -1);
         setUserType(userType);
+    }
+
+    public int getuId() {
+        if(uId == -1) {
+            sp.getInt("uId", -1);
+        }
+        return uId;
+    }
+
+    public UserInfo setuId(int uId) {
+        this.uId = uId;
+        sp.edit().putInt("uId", uId).apply();
+        return this;
+    }
+
+    public UserInfoBean getUserInfoBean() {
+        if(userInfoBean == null) userInfoBean = new UserInfoBean();
+        return userInfoBean;
+    }
+
+    public void setUserInfoBean(UserInfoBean userInfoBean) {
+        this.userInfoBean = userInfoBean;
     }
 
     public boolean isPWRemembered() {
@@ -114,6 +141,7 @@ public class UserInfo {
         }
         return avatarUrl;
     }
+
     public UserInfo setAvatarUrl(@NonNull String avatarUrl) {
         this.avatarUrl = avatarUrl;
         sp.edit().putString("avatarUrl", avatarUrl).apply();
@@ -127,6 +155,7 @@ public class UserInfo {
         }
         return avatarPath;
     }
+
     public UserInfo setAvatarPath(@NonNull String avatarPath) {
         this.avatarPath = avatarPath;
         sp.edit().putString("avatarPath", avatarPath).apply();

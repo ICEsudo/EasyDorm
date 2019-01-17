@@ -12,6 +12,7 @@ import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
 import com.easydorm.easydorm.entity.User;
 import com.easydorm.easydorm.entity.UserInfo;
+import com.easydorm.easydorm.entity.UserInfoBean;
 import com.easydorm.easydorm.entity.UserToken;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.http.PostRequestInterface;
@@ -49,6 +50,7 @@ public class ExampleUnitTest {
     private int level = 0;
 
     private String accessToken, refreshToken;
+    int uId;
 
 
     @Test
@@ -192,7 +194,7 @@ public class ExampleUnitTest {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
-        Call<BaseResponse> call = getRequestInterface.getTopic(accessToken);
+        Call<BaseResponse> call = getRequestInterface.getTopics(accessToken);
         try {
             BaseResponse response = call.execute().body();
             if(response != null) {
@@ -204,6 +206,33 @@ public class ExampleUnitTest {
             e.printStackTrace();
         }
     }
+
+
+    @Test
+    public void getUserInfoTest() {
+        loginTest();
+        uId = 5;
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.Url.baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GetRequestInterface getRequestInterface = retrofit.create(GetRequestInterface.class);
+        Call<BaseResponse> call = getRequestInterface.getUserInfo(accessToken, uId);
+        try {
+            BaseResponse response = call.execute().body();
+            if(response != null) {
+                System.out.println(response.getMessage());
+                UserInfoBean userInfoBean = response.getExtend().getUserInfoBean();
+//                System.out.println(userInfoBean.getEmail());
+            } else {
+                System.out.println("body null");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

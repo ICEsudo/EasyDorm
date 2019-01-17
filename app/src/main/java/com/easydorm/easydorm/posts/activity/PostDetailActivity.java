@@ -19,9 +19,11 @@ import com.bumptech.glide.Glide;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.ActivityCollector;
+import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.entity.Comment;
 import com.easydorm.easydorm.entity.ForumTopicBean;
 import com.easydorm.easydorm.posts.adapter.CommentAdapter;
+import com.easydorm.easydorm.userinfo.UserInfoActivity;
 
 import java.util.ArrayList;
 
@@ -65,8 +67,8 @@ public class PostDetailActivity extends BaseActivity {
     private void initData() {
 
         //init post
-        Glide.with(this).load(post.getPicture()).into(userAvatar);
-        nickNameText.setText(post.getNickName());
+        Glide.with(this).load(Constants.Url.baseUrl + post.getUserInfo().getPicture()).into(userAvatar);
+        nickNameText.setText(post.getUserInfo().getNickname());
         postInfoText.setText(post.getTCreatetime());
         postTitleText.setText(post.getTTitle());
         postText.setText(post.getTContent());
@@ -117,7 +119,19 @@ public class PostDetailActivity extends BaseActivity {
         };
         textView.setOnClickListener(finishListener);
         toolbarIcon.setOnClickListener(finishListener);
+        View.OnClickListener userInfoOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PostDetailActivity.this, UserInfoActivity.class);
+                intent.putExtra("uId", post.getUId());
+                startActivity(intent);
+            }
+        };
+        userAvatar.setOnClickListener(userInfoOnClickListener);
+        nickNameText.setOnClickListener(userInfoOnClickListener);
     }
+
+
 
     @Override
     protected void onDestroy() {

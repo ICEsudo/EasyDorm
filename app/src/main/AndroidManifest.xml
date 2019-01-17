@@ -26,6 +26,7 @@
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".launch.activity.LoginActivity"
+            android:launchMode="singleTask"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".launch.activity.SplashActivity"
@@ -37,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".launch.activity.GuideActivity" />
-        <activity android:name=".UserInfoActivity" />
+        <activity android:name=".userinfo.UserInfoActivity" />
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".posts.activity.PostDetailActivity" />

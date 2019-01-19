@@ -136,7 +136,9 @@ public class UserInfo {
         if (avatarUrl == null || avatarUrl.equals("")) {
             avatarUrl = sp.getString("avatarUrl", "");
             if (avatarUrl == null || avatarUrl.equals("")) {
-                avatarUrl = Constants.Url.baseUrl + "/static/" + EasyDormApp.getCurUserId() + ".jpg";
+                if(userInfoBean != null ) {
+                    avatarUrl = Constants.Url.baseUrl + userInfoBean.getPicture();
+                }
             }
         }
         return avatarUrl;
@@ -144,7 +146,8 @@ public class UserInfo {
 
     public UserInfo setAvatarUrl(@NonNull String avatarUrl) {
         this.avatarUrl = avatarUrl;
-        sp.edit().putString("avatarUrl", avatarUrl).apply();
+        userInfoBean.setPicture(avatarUrl);
+        sp.edit().putString("avatarUrl", Constants.Url.baseUrl + avatarUrl).apply();
         return this;
     }
 

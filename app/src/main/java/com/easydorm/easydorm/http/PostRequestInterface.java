@@ -47,8 +47,14 @@ public interface PostRequestInterface {
     @POST("updateUserInfo")
     Call<BaseResponse> updateUserInfo(
             @Header("access_token") String token,
-            @PartMap Map<String, RequestBody> data,
             @Part MultipartBody.Part picture
+    );
+
+    @Multipart
+    @POST("updateUserInfo")
+    Call<BaseResponse> updateUserInfo(
+            @Header("access_token") String token,
+            @PartMap Map<String, RequestBody> data
     );
 
 }

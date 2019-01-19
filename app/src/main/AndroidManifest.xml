@@ -44,7 +44,8 @@
         <activity android:name=".posts.activity.PostDetailActivity" />
         <activity android:name=".launch.activity.HelpActivity" />
         <activity android:name=".posts.activity.WritePostActivity" />
-        
+        <activity android:name=".userinfo.EditUserInfoActivity" />
+
 
         
         

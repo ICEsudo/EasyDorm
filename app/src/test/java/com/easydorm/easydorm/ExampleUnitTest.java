@@ -199,6 +199,8 @@ public class ExampleUnitTest {
             BaseResponse response = call.execute().body();
             if(response != null) {
                 System.out.println(response.getMessage());
+                System.out.println(response.getExtend().getForumTopic()==null);
+
             } else {
                 System.out.println("body null");
             }
@@ -223,7 +225,7 @@ public class ExampleUnitTest {
             BaseResponse response = call.execute().body();
             if(response != null) {
                 System.out.println(response.getMessage());
-                UserInfoBean userInfoBean = response.getExtend().getUserInfoBean();
+                UserInfoBean userInfoBean = response.getExtend().getUserInfo();
 //                System.out.println(userInfoBean.getEmail());
             } else {
                 System.out.println("body null");

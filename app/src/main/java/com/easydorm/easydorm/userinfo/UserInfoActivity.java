@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,13 +74,17 @@ public class UserInfoActivity extends BaseActivity
     Toolbar toolbar;
     TextView textView;
     ImageView toolbarIcon;
-    @BindView(R.id.user_info_avatar)
-    CircleImageView avatarView;
+    @BindView(R.id.user_info_avatar) CircleImageView avatarView;
     @BindView(R.id.user_info_item_nick_name_text) TextView nickNameText;
     @BindView(R.id.user_info_item_introduction_text) TextView introductionText;
-    @BindView(R.id.user_info_item_dorm_address_text) TextView dormAdressText;
+    @BindView(R.id.user_info_item_dorm_address_text) TextView dormAddressText;
     @BindView(R.id.user_info_item_phone_number_text) TextView phoneText;
     @BindView(R.id.user_info_item_email_text) TextView emailText;
+    @BindView(R.id.user_info_item_nick_name) ConstraintLayout nickNameLayout;
+    @BindView(R.id.user_info_item_introduction) ConstraintLayout introLayout;
+    @BindView(R.id.user_info_item_dorm_address) ConstraintLayout dormAddressLayout;
+    @BindView(R.id.user_info_item_phone_number) ConstraintLayout phoneLayout;
+    @BindView(R.id.user_info_item_email) ConstraintLayout emailLayout;
 
     TakePhoto takePhoto;
     private CropOptions cropOptions;
@@ -88,7 +93,6 @@ public class UserInfoActivity extends BaseActivity
 
     private UserInfoBean userInfoBean;
     private boolean editable;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +171,48 @@ public class UserInfoActivity extends BaseActivity
                 listDialog.show();
             }
         });
+        nickNameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserInfoActivity.this, EditUserInfoActivity.class);
+                int resultCode = 111;
+                intent.putExtra("op", resultCode);
+                intent.putExtra("value", userInfoBean.getNickname());
+                intent.putExtra("title", "修改昵称");
+                intent.putExtra("about", "昵称长度不能超过30字");
+                startActivityForResult(intent, resultCode);
+            }
+        });
+        introLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserInfoActivity.this, EditUserInfoActivity.class);
+                int resultCode = 112;
+                intent.putExtra("op", resultCode);
+                intent.putExtra("value", userInfoBean.getIntroduction());
+                intent.putExtra("title", "修改个人介绍");
+                intent.putExtra("about", "个人介绍不能超过50字");
+                startActivityForResult(intent, resultCode);
+            }
+        });
+        dormAddressLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        phoneLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        emailLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 
@@ -208,12 +254,6 @@ public class UserInfoActivity extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        getTakePhoto().onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE:
@@ -236,7 +276,7 @@ public class UserInfoActivity extends BaseActivity
     @Override
     public void takeSuccess(TResult result) {
         String iconPath = result.getImage().getOriginalPath();
-        updateUserInfo(this, iconPath);
+        updateUserAvatar(this, iconPath);
     }
 
     @Override
@@ -276,9 +316,9 @@ public class UserInfoActivity extends BaseActivity
                             }
                             if (userInfoBean.getDormaddress() != null && !userInfoBean.getDormaddress().equals("")) {
                                 if (userInfoBean.isDormaddressvisiable()) {
-                                    dormAdressText.setText(userInfoBean.getDormaddress());
+                                    dormAddressText.setText(userInfoBean.getDormaddress());
                                 } else {
-                                    dormAdressText.setText("保密");
+                                    dormAddressText.setText("保密");
                                 }
                             }
                             if (userInfoBean.getPhonenumber() != null && !userInfoBean.getPhonenumber().equals("")) {
@@ -309,7 +349,7 @@ public class UserInfoActivity extends BaseActivity
         });
     }
 
-    public void updateUserInfo(Context context,  String iconPath) {
+    public void updateUserAvatar(Context context, String iconPath) {
         User user = EasyDormApp.getUser();
 
         PostRequestInterface postRequestInterface = HttpUtil.getPostRequestInterface();
@@ -322,14 +362,7 @@ public class UserInfoActivity extends BaseActivity
         String fileName = StringUtil.makeFileName(user.getUserInfo().getUserId(), file.getName());
         MultipartBody.Part avatar = MultipartBody.Part.createFormData("picture", fileName, requestBody);
 
-        Map<String, RequestBody> mp = new HashMap<>();
-        mp.put("nickName", RequestBody.create(null, ""));
-        mp.put("phoneNumber", RequestBody.create(null, ""));
-        mp.put("email", RequestBody.create(null, ""));
-        mp.put("dormAddress", RequestBody.create(null, ""));
-        mp.put("introduction", RequestBody.create(null, ""));
-
-        Call<BaseResponse> call = postRequestInterface.updateUserInfo(user.getUserToken().getAccessToken(), mp, avatar);
+        Call<BaseResponse> call = postRequestInterface.updateUserInfo(user.getUserToken().getAccessToken(), avatar);
 
         final String finalIconPath = iconPath;
         call.enqueue(new Callback<BaseResponse>() {
@@ -339,10 +372,45 @@ public class UserInfoActivity extends BaseActivity
                 if(baseResponse != null) {
                     ToastUtil.toast(baseResponse.getMessage());
                     if(response.code() == 200 && baseResponse.getCode() == 1) {
-                        EasyDormApp.getUser().getUserInfo().setAvatarUrl(Constants.Url.baseUrl+"/static/"+fileName).setAvatarPath(finalIconPath);
-//                        user.getUserInfo().setNickName(editNickName.getText().toString());
+                        EasyDormApp.getUser().getUserInfo().setAvatarUrl("/static/"+fileName).setAvatarPath(finalIconPath);
                         CacheUtil.clearGlideAllCache(UserInfoActivity.this);
                         Glide.with(context).load(finalIconPath).into(avatarView);
+                    }
+                } else {
+                    ToastUtil.toast("服务器异常");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void updateUserInfo(Map<String, RequestBody> mp) {
+        User user = EasyDormApp.getUser();
+
+        PostRequestInterface postRequestInterface = HttpUtil.getPostRequestInterface();
+//        mp.put("nickName", RequestBody.create(null, ""));
+//        mp.put("phoneNumber", RequestBody.create(null, ""));
+//        mp.put("email", RequestBody.create(null, ""));
+//        mp.put("dormAddress", RequestBody.create(null, ""));
+//        mp.put("introduction", RequestBody.create(null, ""));
+
+        Call<BaseResponse> call = postRequestInterface.updateUserInfo(user.getUserToken().getAccessToken(), mp);
+
+
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                BaseResponse baseResponse = response.body();
+                if(baseResponse != null) {
+                    if(response.code() == 200 && baseResponse.getCode() == 1) {
+                        ToastUtil.toast("修改成功");
+                    } else {
+                        ToastUtil.toast(baseResponse.getMessage());
                     }
                 } else {
                     ToastUtil.toast("服务器异常");
@@ -358,13 +426,37 @@ public class UserInfoActivity extends BaseActivity
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(data != null) {
+            String value = data.getStringExtra("value");
+            HashMap<String, RequestBody> mp = new HashMap<>();
+            switch (requestCode) {
+                case 111:
+                    mp.put("nickName", RequestBody.create(null, value));
+                    nickNameText.setText(value);
+                    userInfoBean.setNickname(value);
+                    break;
+                case 112:
+                    mp.put("introduction", RequestBody.create(null, value));
+                    introductionText.setText(value);
+                    userInfoBean.setIntroduction(value);
+                    break;
+                default:
+//                    ToastUtil.toast(String.valueOf(requestCode));
+                    getTakePhoto().onActivityResult(requestCode, resultCode, data);
+            }
+            if(!mp.isEmpty()) {
+                updateUserInfo(mp);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
     }
-
-
 
 }

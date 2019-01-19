@@ -133,7 +133,9 @@ public class RecommendFragment extends Fragment {
                 if(baseResponse != null) {
                     if(baseResponse.getCode() == 1) {
                         List<ForumTopicBean> newList = baseResponse.getExtend().getForumTopic();
-                        postAdapter.replaceData(newList);
+                        if(newList != null) {
+                            postAdapter.replaceData(newList);
+                        }
                     }
                 } else {
                     ToastUtil.toast("服务器异常");

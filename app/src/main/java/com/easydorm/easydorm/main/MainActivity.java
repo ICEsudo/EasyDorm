@@ -1,6 +1,8 @@
 package com.easydorm.easydorm.main;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -13,6 +15,11 @@ import com.easydorm.easydorm.AboutActivity;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
+import com.easydorm.easydorm.Utils.Constants;
+import com.easydorm.easydorm.Utils.HttpUtil;
+import com.easydorm.easydorm.entity.BaseResponse;
+import com.easydorm.easydorm.entity.UserInfo;
+import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.userinfo.UserInfoActivity;
 import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.Utils.NetWorkUtil;
@@ -42,6 +49,9 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends BaseActivity {
@@ -58,6 +68,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar_icon) CircleImageView toolBarIcon;
     CircleImageView userAvatarView;
     View navigationHeader;
+    TextView userNickNameText, userIntroText;
 //    PopupWindow popupWindow;
 //    TextView shareTextView,transactionTextView;
 
@@ -80,6 +91,7 @@ public class MainActivity extends BaseActivity {
 
     private void initData() {
         NetWorkUtil.checkNetWork();
+        getUserInfo(this, EasyDormApp.getUser().getUserInfo().getuId());
 
         fragmentsList = new ArrayList<>();
         fragmentsList.add(new RecommendFragment());
@@ -100,6 +112,9 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         navigationHeader = navigationView.getHeaderView(0);
         userAvatarView = navigationHeader.findViewById(R.id.user_avatar);
+        userNickNameText = navigationHeader.findViewById(R.id.navigation_user_nick_name);
+        userIntroText = navigationHeader.findViewById(R.id.navigation_user_intro);
+
         setSupportActionBar(toolbar);
 
 //        View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.pop_window_up, null);
@@ -252,21 +267,53 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    public void getUserInfo(Context context, int uId) {
+        GetRequestInterface getRequestInterface = HttpUtil.getGetRequestInterface();
+        Call<BaseResponse> call = getRequestInterface.getUserInfo(EasyDormApp.getUser().getUserToken().getAccessToken(), uId);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                BaseResponse baseResponse = response.body();
+                if(baseResponse != null && baseResponse.getExtend().getUserInfo() != null) {
+                    UserInfo userInfo = EasyDormApp.getUser().getUserInfo();
+                    if(userInfo != null) {
+                        userInfo.setUserInfoBean(baseResponse.getExtend().getUserInfo());
+                        String avatarPath = userInfo.getAvatarPath();
+                        String avatarUrl = Constants.Url.baseUrl + userInfo.getUserInfoBean().getPicture();
+                        RequestOptions options = new RequestOptions()
+                                .placeholder(R.mipmap.avatar)
+                                .error(R.mipmap.avatar);
+                        if(avatarPath != null && !avatarPath.equals("")) {
+                            Glide.with(context).load(avatarPath).apply(options).into(userAvatarView);
+                            Glide.with(context).load(avatarPath).apply(options).into(toolBarIcon);
+                        } else if(!avatarUrl.equals("")) {
+                            Glide.with(context).load(avatarUrl).apply(options).into(userAvatarView);
+                            Glide.with(context).load(avatarUrl).apply(options).into(toolBarIcon);
+                        }
+                        if (userInfo.getUserInfoBean().getNickname() != null) {
+                            userNickNameText.setText(userInfo.getUserInfoBean().getNickname());
+                        }
+                        if (userInfo.getUserInfoBean().getIntroduction() != null) {
+                            userIntroText.setText(userInfo.getUserInfoBean().getIntroduction());
+                        }
+                    }
+                } else {
+                    ToastUtil.toast("服务器异常");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
-        String avatarPath = EasyDormApp.getUser().getUserInfo().getAvatarPath();
-        String avatarUrl = EasyDormApp.getUser().getUserInfo().getAvatarUrl();
-        RequestOptions options = new RequestOptions()
-                .placeholder(R.mipmap.avatar)
-                .error(R.mipmap.avatar);
-        if(avatarPath != null && !avatarPath.equals("")) {
-            Glide.with(this).load(avatarPath).apply(options).into(userAvatarView);
-            Glide.with(this).load(avatarPath).apply(options).into(toolBarIcon);
-        } else if(avatarUrl != null && !avatarUrl.equals("")) {
-            Glide.with(this).load(avatarUrl).apply(options).into(userAvatarView);
-            Glide.with(this).load(avatarUrl).apply(options).into(toolBarIcon);
-        }
+        getUserInfo(this, EasyDormApp.getUser().getUserInfo().getuId());
     }
 
     @Override

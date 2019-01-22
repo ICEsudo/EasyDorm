@@ -27,17 +27,28 @@ public class ForumTopicBean implements Serializable {
     private String tCreatetime;
     private String tUpdatetime;
     private String tContent;
+    private String nickName;
+    private String picture;
+
 
     private String summary;
 
-    private UserInfoBean userInfo;
 
-    public UserInfoBean getUserInfo() {
-        return userInfo;
+
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setUserInfo(UserInfoBean userInfo) {
-        this.userInfo = userInfo;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public Integer getTId() {

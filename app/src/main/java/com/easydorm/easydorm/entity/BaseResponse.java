@@ -44,34 +44,4 @@ public class BaseResponse {
         this.extend = extend;
     }
 
-    public static class ExtendBean {
-        private List<ForumTopicBean> forumTopic;    //getTopics
-        private UserInfoBean userInfo;              //getUserInfo
-        private int uId;                            //login
-
-        public int getuId() {
-            return uId;
-        }
-
-        public void setuId(int uId) {
-            this.uId = uId;
-        }
-        public UserInfoBean getUserInfo() {
-            return userInfo;
-        }
-
-        public void setUserInfo(UserInfoBean userInfo) {
-            this.userInfo = userInfo;
-        }
-
-        public List<ForumTopicBean> getForumTopic() {
-            return forumTopic;
-        }
-
-        public void setForumTopic(List<ForumTopicBean> forumTopic) {
-            this.forumTopic = forumTopic;
-        }
-
-
-    }
 }

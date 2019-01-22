@@ -132,7 +132,7 @@ public class RecommendFragment extends Fragment {
                 BaseResponse baseResponse = response.body();
                 if(baseResponse != null) {
                     if(baseResponse.getCode() == 1) {
-                        List<ForumTopicBean> newList = baseResponse.getExtend().getForumTopic();
+                        List<ForumTopicBean> newList = baseResponse.getExtend().getForumTopics();
                         if(newList != null) {
                             postAdapter.replaceData(newList);
                         }

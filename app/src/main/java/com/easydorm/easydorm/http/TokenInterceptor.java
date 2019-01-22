@@ -45,12 +45,7 @@ public class TokenInterceptor implements Interceptor {
                         jsonObject = new JSONObject(new String(bytes));
                         code = jsonObject.optInt("code");
                         if(code == 3) { //refresh_token expired
-                            ActivityCollector.getTopActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtil.toast("登录信息已过期,请重新登录");
-                                }
-                            });
+                            ToastUtil.toast("登录信息已过期,请重新登录");
                             ActivityCollector.finishToLoginActivity();
                         }
                         response = response.newBuilder()

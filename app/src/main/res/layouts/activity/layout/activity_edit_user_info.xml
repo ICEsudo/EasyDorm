@@ -36,6 +36,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_edit_user_info" />
 
+
+
     <TextView
         android:id="@+id/edit_user_info_about"
         android:layout_width="match_parent"
@@ -48,5 +50,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_user_info_text" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

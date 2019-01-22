@@ -199,7 +199,7 @@ public class ExampleUnitTest {
             BaseResponse response = call.execute().body();
             if(response != null) {
                 System.out.println(response.getMessage());
-                System.out.println(response.getExtend().getForumTopic()==null);
+                System.out.println(response.getExtend().getForumTopics()==null);
 
             } else {
                 System.out.println("body null");

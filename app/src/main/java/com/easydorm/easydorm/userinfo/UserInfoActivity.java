@@ -204,7 +204,13 @@ public class UserInfoActivity extends BaseActivity
         phoneLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(UserInfoActivity.this, EditUserInfoActivity.class);
+                int resultCode = 114;
+                intent.putExtra("op", resultCode);
+                intent.putExtra("value", userInfoBean.getPhonenumber());
+                intent.putExtra("title", "修改电话");
+                intent.putExtra("about", "");
+                startActivityForResult(intent, resultCode);
             }
         });
         emailLayout.setOnClickListener(new View.OnClickListener() {
@@ -441,6 +447,11 @@ public class UserInfoActivity extends BaseActivity
                     mp.put("introduction", RequestBody.create(null, value));
                     introductionText.setText(value);
                     userInfoBean.setIntroduction(value);
+                    break;
+                case 114:
+                    mp.put("phoneNumber", RequestBody.create(null, value));
+                    introductionText.setText(value);
+                    userInfoBean.setPhonenumber(value);
                     break;
                 default:
 //                    ToastUtil.toast(String.valueOf(requestCode));

@@ -141,7 +141,7 @@ public class LoginActivity extends BaseActivity {
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 BaseResponse baseResponse = response.body();
                 if(baseResponse == null) {
-                    Toast.makeText(context, "服务器异常", Toast.LENGTH_SHORT).show();
+                    ToastUtil.toast("服务器异常");
                 } else {
 //                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if(baseResponse.getCode() == 1) {
@@ -170,7 +170,8 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
-                Toast.makeText(context, "请求失败", Toast.LENGTH_SHORT).show();
+                ToastUtil.toast("请求失败");
+                t.printStackTrace();
             }
         });
 

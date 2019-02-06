@@ -25,5 +25,14 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <include
+        android:id="@+id/post_detail_dialog_input"
+        layout="@layout/dialog_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,6 @@ public class ToastUtil {
 
     public static void toast(String str) {
         toastTime(str, Toast.LENGTH_SHORT);
-
     }
 
     public static void toastLong(String str) {

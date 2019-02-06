@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import androidx.preference.Preference;
 
 import com.easydorm.easydorm.Utils.ActivityCollector;
 import com.easydorm.easydorm.launch.activity.LoginActivity;

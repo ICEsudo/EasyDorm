@@ -57,4 +57,34 @@ public interface PostRequestInterface {
             @PartMap Map<String, RequestBody> data
     );
 
+    @FormUrlEncoded
+    @POST("createBack")
+    Call<BaseResponse> createBack(
+            @Header("access_token") String token,
+            @Field("pId") int pId,
+            @Field("content") String content,
+            @Field("type") int type
+    );
+
+    @FormUrlEncoded
+    @POST("createBack")
+    Call<BaseResponse> createBack(
+            @Header("access_token") String token,
+            @Field("tId") int tId,
+            @Field("pId") int pId,
+            @Field("content") String content,
+            @Field("type") int type
+    );
+
+    @FormUrlEncoded
+    @POST("createBack")
+    Call<BaseResponse> createBack(
+            @Header("access_token") String token,
+            @Field("tId") int tId,
+            @Field("pId") int pId,
+            @Field("content") String content,
+            @Field("type") int type,
+            @Field("pType") int pType
+    );
+
 }

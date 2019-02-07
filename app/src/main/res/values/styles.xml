@@ -15,7 +15,7 @@
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme.Full">
-        <item name="android:windowBackground">@mipmap/photo_1</item>
+        <item name="android:windowBackground">@mipmap/new_year</item>
     </style>
 
 </resources>

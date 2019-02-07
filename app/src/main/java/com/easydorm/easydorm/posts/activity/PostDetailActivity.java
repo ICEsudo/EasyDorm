@@ -2,6 +2,8 @@ package com.easydorm.easydorm.posts.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -15,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,11 +39,12 @@ import com.easydorm.easydorm.entity.ForumTopicBean;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.posts.adapter.CommentAdapter;
 import com.easydorm.easydorm.userinfo.UserInfoActivity;
+import com.easydorm.easydorm.view.InputDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostDetailActivity extends BaseActivity {
+public class PostDetailActivity extends FragmentActivity {
 
     Toolbar toolbar;
     TextView textView;
@@ -50,6 +54,7 @@ public class PostDetailActivity extends BaseActivity {
     TextView nickNameText, postInfoText, postTitleText, postText, agreeCountText;
     @BindView(R.id.post_detail_comment_recycler_view)
     RecyclerView commentRecyclerView;
+    InputDialogFragment inputDialogFragment;
 
     private ArrayList<Comment> commentArrayList;
     private CommentAdapter commentAdapter;
@@ -99,7 +104,6 @@ public class PostDetailActivity extends BaseActivity {
         commentAdapter.addHeaderView(headerView);
 
 
-
     }
 
 
@@ -120,6 +124,12 @@ public class PostDetailActivity extends BaseActivity {
         textView.setText("帖子详情");
         textView = toolbar.findViewById(R.id.toolbar_back_text_left);
         toolbarIcon = toolbar.findViewById(R.id.toolbar_back_icon);
+
+        inputDialogFragment = new InputDialogFragment();
+        inputDialogFragment.settId(post.getTId());
+        getSupportFragmentManager().beginTransaction().replace(R.id.post_detail_dialog_input, inputDialogFragment).commit();
+
+
     }
 
     private void initListener() {
@@ -141,10 +151,16 @@ public class PostDetailActivity extends BaseActivity {
         };
         userAvatar.setOnClickListener(userInfoOnClickListener);
         nickNameText.setOnClickListener(userInfoOnClickListener);
+        findViewById(R.id.post_detail_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputDialogFragment.clearFocus();
+            }
+        });
     }
 
 
-    private void load() {
+    public void load() {
         GetRequestInterface getRequestInterface = HttpUtil.getGetRequestInterface();
         Call<BaseResponse> call = getRequestInterface.getTopic(EasyDormApp.getUser().getUserToken().getAccessToken(), post.getTId());
 

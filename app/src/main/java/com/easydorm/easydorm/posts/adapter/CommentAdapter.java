@@ -36,7 +36,9 @@ public class CommentAdapter extends BaseQuickAdapter<Comment, CommentViewHolder>
                 .into((CircleImageView) helper.getView(R.id.comment_user_avatar));
         helper.setText(R.id.comment_user_nick_name, item.getForumBack().getNickName())
                 .setText(R.id.comment_info, item.getForumBack().getBCreatetime())
-                .setText(R.id.comment_text, item.getForumBack().getBContent());
+                .setText(R.id.comment_text, item.getForumBack().getBContent())
+                .addOnClickListener(R.id.comment_user_nick_name)
+                .addOnClickListener(R.id.comment_user_avatar);
     }
 
 }

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.easydorm.easydorm.BaseActivity;
 import com.easydorm.easydorm.EasyDormApp;
 import com.easydorm.easydorm.R;
@@ -42,6 +43,7 @@ import com.easydorm.easydorm.userinfo.UserInfoActivity;
 import com.easydorm.easydorm.view.InputDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PostDetailActivity extends FragmentActivity {
@@ -75,6 +77,14 @@ public class PostDetailActivity extends FragmentActivity {
         Intent intent = this.getIntent();
         post = (ForumTopicBean) intent.getSerializableExtra("post");
 
+        //init comments
+        commentArrayList = new ArrayList<>();
+        commentAdapter = new CommentAdapter(R.layout.item_comment, commentArrayList);
+        commentRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        commentRecyclerView.setAdapter(commentAdapter);
+        commentAdapter.bindToRecyclerView(commentRecyclerView);
+//        commentAdapter.setEmptyView(R.layout.empty_view_comment);
+
         initView();
         initListener();
         initData();
@@ -94,15 +104,6 @@ public class PostDetailActivity extends FragmentActivity {
         agreeCountText.setText(String.valueOf(post.getTGoodcount()));
 
 
-        //init comments
-        commentArrayList = new ArrayList<>();
-        commentAdapter = new CommentAdapter(R.layout.item_comment, commentArrayList);
-        commentRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        commentRecyclerView.setAdapter(commentAdapter);
-        commentAdapter.bindToRecyclerView(commentRecyclerView);
-//        commentAdapter.setEmptyView(R.layout.empty_view_comment);
-        commentAdapter.addHeaderView(headerView);
-
 
     }
 
@@ -117,6 +118,7 @@ public class PostDetailActivity extends FragmentActivity {
         postTitleText = headerView.findViewById(R.id.post_detail_title);
         postText = headerView.findViewById(R.id.post_detail_text);
         agreeCountText = headerView.findViewById(R.id.post_agree_text);
+        commentAdapter.addHeaderView(headerView);
 
 
         toolbar = findViewById(R.id.toolbar_post_detail).findViewById(R.id.toolbar_back);
@@ -155,6 +157,33 @@ public class PostDetailActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 inputDialogFragment.clearFocus();
+            }
+        });
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputDialogFragment.clearFocus();
+            }
+        });
+        commentAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                inputDialogFragment.clearFocus();
+                Comment comment = commentArrayList.get(position);
+                //TODO
+            }
+        });
+        commentAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+                switch (view.getId()) {
+                    case R.id.comment_user_avatar:
+                    case R.id.comment_user_nick_name:
+                        Intent intent = new Intent(PostDetailActivity.this, UserInfoActivity.class);
+                        intent.putExtra("uId", commentArrayList.get(position).getForumBack().getUId());
+                        startActivity(intent);
+                        break;
+                }
             }
         });
     }
@@ -217,6 +246,7 @@ public class PostDetailActivity extends FragmentActivity {
             View emptyView = LayoutInflater.from(this).inflate(R.layout.empty_view_comment, null);
             commentAdapter.addHeaderView(emptyView);
         } else {
+            Collections.reverse(commentArrayList);
             commentAdapter.notifyDataSetChanged();
         }
 

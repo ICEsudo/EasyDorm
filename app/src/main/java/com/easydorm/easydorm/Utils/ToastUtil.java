@@ -22,7 +22,7 @@ public class ToastUtil {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 Toast.makeText(EasyDormApp.getContext(), str, time).show();
             } else {
-                ActivityCollector.getTopActivity().runOnUiThread(new Runnable() {
+                EasyDormApp.getCurrentActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(EasyDormApp.getContext(), str, time).show();

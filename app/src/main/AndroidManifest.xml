@@ -39,13 +39,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".launch.activity.GuideActivity" />
-        <activity android:name=".userinfo.UserInfoActivity" />
-        <activity android:name=".setting.SettingActivity" />
-        <activity android:name=".AboutActivity" />
-        <activity android:name=".posts.activity.PostDetailActivity" />
-        <activity android:name=".launch.activity.HelpActivity" />
-        <activity android:name=".posts.activity.WritePostActivity" />
-        <activity android:name=".userinfo.EditUserInfoActivity" />
+        <activity android:name=".userinfo.UserInfoActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".setting.SettingActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".AboutActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".posts.activity.PostDetailActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".launch.activity.HelpActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".posts.activity.WritePostActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".userinfo.EditUserInfoActivity"
+            android:launchMode="singleTask"/>
 
 
         

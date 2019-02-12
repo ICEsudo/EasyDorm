@@ -9,9 +9,16 @@ import com.easydorm.easydorm.Utils.SPUtil;
 import com.easydorm.easydorm.entity.User;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.NonNull;
 
 
 public class EasyDormApp extends Application {
@@ -22,6 +29,7 @@ public class EasyDormApp extends Application {
     private static WeakReference<Activity> currentActivity;
 
     private static String curUserId;
+
 
     @Override
     public void onCreate() {
@@ -38,6 +46,15 @@ public class EasyDormApp extends Application {
 
         //for logger
         Logger.addLogAdapter(new AndroidLogAdapter());
+
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
+            @NonNull
+            @Override
+            public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
+//                    layout.setPrimaryColorsId(R.color.colorPrimary, R.color.colorPrimary);//全局设置主题颜色
+                return new ClassicsHeader(context);//.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
+            }
+        });
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override

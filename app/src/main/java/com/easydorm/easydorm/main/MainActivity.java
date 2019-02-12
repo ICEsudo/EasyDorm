@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -257,7 +258,8 @@ public class MainActivity extends BaseActivity {
         actionMenuView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WritePostActivity.class));
+//                startActivity(new Intent(MainActivity.this, WritePostActivity.class));
+                startActivityForResult(new Intent(MainActivity.this, WritePostActivity.class), 423);
             }
         });
 
@@ -307,6 +309,19 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case 423:
+                if(resultCode == 233) {
+//                    ToastUtil.toast("刷新");
+                    ((RecommendFragment) fragmentsList.get(0)).refreshPosts();
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onResume() {

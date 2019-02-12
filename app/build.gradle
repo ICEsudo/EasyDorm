@@ -130,6 +130,11 @@ dependencies {
     //BaseRecyclerViewAdapterHelper
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.31'
 
+    //Refresh
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-3'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-andx-3'
+
+
     //app introduction
     implementation 'com.github.paolorotolo:appintro:4.1.0'
 

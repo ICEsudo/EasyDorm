@@ -24,11 +24,15 @@ import com.easydorm.easydorm.posts.activity.PostDetailActivity;
 import com.easydorm.easydorm.posts.adapter.PostAdapter;
 import com.easydorm.easydorm.userinfo.UserInfoActivity;
 import com.orhanobut.logger.Logger;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +45,8 @@ import retrofit2.Response;
 
 public class RecommendFragment extends Fragment {
 
-    @BindView(R.id.post_recommend_recycler_view)
+    @BindView(R.id.post_recommend_refresh_layout)
+    SmartRefreshLayout smartRefreshLayout;
     RecyclerView postRecommendRecyclerView;
     @BindView(R.id.fragment_recommend_framelayout)
     FrameLayout frameLayout;
@@ -57,6 +62,8 @@ public class RecommendFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recommend, container, false);
         ButterKnife.bind(this, view);
 
+        postRecommendRecyclerView = smartRefreshLayout.findViewById(R.id.post_recommend_recycler_view);
+
         postArrayList = new ArrayList<>();
         postAdapter = new PostAdapter(R.layout.item_post_card, postArrayList);
 
@@ -69,9 +76,7 @@ public class RecommendFragment extends Fragment {
 
         initListener();
 
-
-        page = 1;
-        loadPost();
+        refreshPosts();
 
         return view;
     }
@@ -123,6 +128,13 @@ public class RecommendFragment extends Fragment {
 //                ToastUtil.toast("onLoadMoreRequested");
             }
         }, postRecommendRecyclerView);
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                refreshPosts();
+                smartRefreshLayout.finishRefresh();
+            }
+        });
     }
 
 
@@ -167,6 +179,14 @@ public class RecommendFragment extends Fragment {
             }
         });
     }
+
+
+    public void refreshPosts() {
+        postArrayList.clear();
+        page = 1;
+        loadPost();
+    }
+
 
 
     private void agree(int pos) {

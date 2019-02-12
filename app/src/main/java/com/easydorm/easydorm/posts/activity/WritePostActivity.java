@@ -162,6 +162,7 @@ public class WritePostActivity extends AppCompatActivity {
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                 if (response.body() != null) {
                     if(response.body().getCode() == 1) {
+                        setResult(233);
                         finish();
                     } else {
                         ToastUtil.toast("发布失败");

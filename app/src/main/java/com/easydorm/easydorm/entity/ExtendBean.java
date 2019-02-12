@@ -6,6 +6,7 @@ public class ExtendBean {
 
     //getTopics
     private List<ForumTopicBean> forumTopics;
+    private Integer pages;
 
     //getUserInfo
     private UserInfoBean userInfo;
@@ -15,9 +16,14 @@ public class ExtendBean {
 
     //getTopic
     private ForumTopicBean forumTopic;
-    private List<ForumBackBean> forumBack;
-    private List<ForumSecondBackBean> forumSecondBack;
-    private List<ForumMultiBackBean> forumMultiBack;
+
+
+//    private List<ForumBackBean> forumBack;
+//    private List<ForumSecondBackBean> forumSecondBack;
+//    private List<ForumMultiBackBean> forumMultiBack;
+//
+//
+//
 
 
 
@@ -28,9 +34,13 @@ public class ExtendBean {
 
 
 
+    public Integer getPages() {
+        return pages;
+    }
 
-
-
+    public void setPages(Integer pages) {
+        this.pages = pages;
+    }
 
     public List<ForumTopicBean> getForumTopics() {
         return forumTopics;
@@ -48,29 +58,29 @@ public class ExtendBean {
         this.forumTopic = forumTopic;
     }
 
-    public List<ForumSecondBackBean> getForumSecondBack() {
-        return forumSecondBack;
-    }
-
-    public void setForumSecondBack(List<ForumSecondBackBean> forumSecondBack) {
-        this.forumSecondBack = forumSecondBack;
-    }
-
-    public List<ForumMultiBackBean> getForumMultiBack() {
-        return forumMultiBack;
-    }
-
-    public void setForumMultiBack(List<ForumMultiBackBean> forumMultiBack) {
-        this.forumMultiBack = forumMultiBack;
-    }
-
-    public List<ForumBackBean> getForumBack() {
-        return forumBack;
-    }
-
-    public void setForumBack(List<ForumBackBean> forumBack) {
-        this.forumBack = forumBack;
-    }
+//    public List<ForumSecondBackBean> getForumSecondBack() {
+//        return forumSecondBack;
+//    }
+//
+//    public void setForumSecondBack(List<ForumSecondBackBean> forumSecondBack) {
+//        this.forumSecondBack = forumSecondBack;
+//    }
+//
+//    public List<ForumMultiBackBean> getForumMultiBack() {
+//        return forumMultiBack;
+//    }
+//
+//    public void setForumMultiBack(List<ForumMultiBackBean> forumMultiBack) {
+//        this.forumMultiBack = forumMultiBack;
+//    }
+//
+//    public List<ForumBackBean> getForumBack() {
+//        return forumBack;
+//    }
+//
+//    public void setForumBack(List<ForumBackBean> forumBack) {
+//        this.forumBack = forumBack;
+//    }
 
     public int getuId() {
         return uId;

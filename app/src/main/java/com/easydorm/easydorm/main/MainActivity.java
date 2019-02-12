@@ -1,7 +1,6 @@
 package com.easydorm.easydorm.main;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +27,7 @@ import com.easydorm.easydorm.main.adapter.MainPagerAdapter;
 import com.easydorm.easydorm.posts.activity.WritePostActivity;
 import com.easydorm.easydorm.posts.fragment.AttentionFragment;
 import com.easydorm.easydorm.dorm.DormFragment;
-import com.easydorm.easydorm.chat.MessageFragment;
+import com.easydorm.easydorm.chat.fragment.MessageFragment;
 import com.easydorm.easydorm.posts.fragment.RecommendFragment;
 import com.easydorm.easydorm.posts.fragment.SearchFragment;
 import com.easydorm.easydorm.setting.SettingActivity;
@@ -108,7 +107,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @SuppressLint("RestrictedApi")
     private void initView() {
         navigationHeader = navigationView.getHeaderView(0);
         userAvatarView = navigationHeader.findViewById(R.id.user_avatar);

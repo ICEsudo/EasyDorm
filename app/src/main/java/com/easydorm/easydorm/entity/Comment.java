@@ -1,14 +1,12 @@
 package com.easydorm.easydorm.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Comment {
 
     private ForumBackBean forumBack;
-    private List<ForumSecondBackBean> forumSecondBack;
-    private List<ForumMultiBackBean> forumMultiBack;
 
-
+    private ArrayList<SimpleComment> simpleCommentList;
 
 
     public ForumBackBean getForumBack() {
@@ -19,20 +17,12 @@ public class Comment {
         this.forumBack = forumBack;
     }
 
-    public List<ForumSecondBackBean> getForumSecondBack() {
-        return forumSecondBack;
+    public void addSimpleComment(int uId, String userName, int bUId, String bUserName, String content, boolean isSecond) {
+        if(simpleCommentList == null) simpleCommentList = new ArrayList<>();
+        simpleCommentList.add(new SimpleComment(uId, userName, bUId, bUserName, content, isSecond));
     }
 
-    public void setForumSecondBack(List<ForumSecondBackBean> forumSecondBack) {
-        this.forumSecondBack = forumSecondBack;
+    public ArrayList<SimpleComment> getSimpleCommentList() {
+        return simpleCommentList;
     }
-
-    public List<ForumMultiBackBean> getForumMultiBack() {
-        return forumMultiBack;
-    }
-
-    public void setForumMultiBack(List<ForumMultiBackBean> forumMultiBack) {
-        this.forumMultiBack = forumMultiBack;
-    }
-
 }

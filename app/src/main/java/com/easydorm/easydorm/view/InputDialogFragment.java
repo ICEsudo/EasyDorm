@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import com.easydorm.easydorm.R;
 import com.easydorm.easydorm.Utils.HttpUtil;
 import com.easydorm.easydorm.Utils.ToastUtil;
 import com.easydorm.easydorm.entity.BaseResponse;
+import com.easydorm.easydorm.entity.Comment;
 import com.easydorm.easydorm.entity.ExtendBean;
 import com.easydorm.easydorm.http.PostRequestInterface;
 import com.easydorm.easydorm.posts.activity.PostDetailActivity;
@@ -42,7 +44,7 @@ public class InputDialogFragment extends DialogFragment {
 
 
     private int backType = 1;
-    private int pId = -1, tId = -1;
+    private int pId = -1, tId = -1, pType = 0;
 
 
     @Nullable
@@ -87,7 +89,6 @@ public class InputDialogFragment extends DialogFragment {
         activity = null;
         return super.onCreateDialog(savedInstanceState);
 
-
     }
 
 
@@ -105,10 +106,10 @@ public class InputDialogFragment extends DialogFragment {
                 call = postRequestInterface.createBack(EasyDormApp.getUser().getUserToken().getAccessToken(), pId, content, 1);
                 break;
             case 2:
-                call = postRequestInterface.createBack(EasyDormApp.getUser().getUserToken().getAccessToken(),tId, pId, content, 2);
+                call = postRequestInterface.createBack(EasyDormApp.getUser().getUserToken().getAccessToken(), tId, pId, content, 2);
                 break;
             default:
-                call = postRequestInterface.createBack(EasyDormApp.getUser().getUserToken().getAccessToken(), tId, pId, content, 3, 0);
+                call = postRequestInterface.createBack(EasyDormApp.getUser().getUserToken().getAccessToken(), tId, pId, content, 3, pType);
 
         }
         if(call != null) {
@@ -156,13 +157,36 @@ public class InputDialogFragment extends DialogFragment {
         setpId(tId);
     }
 
+    public void setpType(int pType) {
+        this.pType = pType;
+    }
+
+    public boolean hasFocus() {
+        return inputText.hasFocus();
+    }
+
+    public void getFocus(Comment comment) {
+        setpId(comment.getForumBack().getBId());
+        inputText.setHint("回复"+comment.getForumBack().getNickName());
+        inputText.requestFocus();
+        Activity activity = getActivity();
+        if(activity != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(inputText, 0);
+        }
+        setBackType(2);
+    }
+
     public void clearFocus() {
         inputText.clearFocus();
         Activity activity = getActivity();
         if(activity != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
         }
+        setpId(tId);
+        inputText.setHint("回复帖子");
+        setBackType(1);
     }
 
 

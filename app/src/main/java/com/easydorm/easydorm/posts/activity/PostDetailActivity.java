@@ -37,6 +37,7 @@ import com.easydorm.easydorm.entity.ForumBackBean;
 import com.easydorm.easydorm.entity.ForumMultiBackBean;
 import com.easydorm.easydorm.entity.ForumSecondBackBean;
 import com.easydorm.easydorm.entity.ForumTopicBean;
+import com.easydorm.easydorm.entity.SimpleComment;
 import com.easydorm.easydorm.http.GetRequestInterface;
 import com.easydorm.easydorm.posts.adapter.CommentAdapter;
 import com.easydorm.easydorm.userinfo.UserInfoActivity;
@@ -53,13 +54,13 @@ public class PostDetailActivity extends FragmentActivity {
     ImageView toolbarIcon;
 
     CircleImageView userAvatar;
-    TextView nickNameText, postInfoText, postTitleText, postText, agreeCountText;
-    @BindView(R.id.post_detail_comment_recycler_view)
-    RecyclerView commentRecyclerView;
+    TextView nickNameText, postInfoText, postTitleText, postText, agreeCountText, commentCountText;
+    @BindView(R.id.post_detail_comment_recycler_view) RecyclerView commentRecyclerView;
     InputDialogFragment inputDialogFragment;
 
     private ArrayList<Comment> commentArrayList;
     private CommentAdapter commentAdapter;
+
 
     private ForumTopicBean post;
 
@@ -118,6 +119,7 @@ public class PostDetailActivity extends FragmentActivity {
         postTitleText = headerView.findViewById(R.id.post_detail_title);
         postText = headerView.findViewById(R.id.post_detail_text);
         agreeCountText = headerView.findViewById(R.id.post_agree_text);
+        commentCountText = headerView.findViewById(R.id.post_comment_text);
         commentAdapter.addHeaderView(headerView);
 
 
@@ -168,9 +170,12 @@ public class PostDetailActivity extends FragmentActivity {
         commentAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                inputDialogFragment.clearFocus();
-                Comment comment = commentArrayList.get(position);
-                //TODO
+                if(inputDialogFragment.hasFocus()) {
+                    inputDialogFragment.clearFocus();
+                } else {
+                    Comment comment = commentArrayList.get(position);
+                    inputDialogFragment.getFocus(comment);
+                }
             }
         });
         commentAdapter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
@@ -199,8 +204,7 @@ public class PostDetailActivity extends FragmentActivity {
                 BaseResponse baseResponse = response.body();
                 if(baseResponse != null && baseResponse.getExtend() != null) {
                     ExtendBean extendBean = baseResponse.getExtend();
-                    if(extendBean.getForumTopic() != null && extendBean.getForumBack() != null &&
-                            extendBean.getForumSecondBack() != null && extendBean.getForumMultiBack() != null) {
+                    if(extendBean.getForumTopic() != null) {
                         post = extendBean.getForumTopic();
                         Glide.with(PostDetailActivity.this).load(Constants.Url.baseUrl + post.getPicture()).into(userAvatar);
                         nickNameText.setText(post.getNickName());
@@ -208,7 +212,8 @@ public class PostDetailActivity extends FragmentActivity {
                         postTitleText.setText(post.getTTitle());
                         postText.setText(post.getTContent());
                         agreeCountText.setText(String.valueOf(post.getTGoodcount()));
-                        formatCommentList(extendBean.getForumBack(), extendBean.getForumSecondBack(), extendBean.getForumMultiBack());
+                        commentCountText.setText(String.valueOf(post.getCommentCount()));
+                       // formatCommentList(extendBean.getForumBack(), extendBean.getForumSecondBack(), extendBean.getForumMultiBack());
                     }
                 }
             }
@@ -231,10 +236,22 @@ public class PostDetailActivity extends FragmentActivity {
             if(forumBackBean.isBHasback()) {
                 for(ForumSecondBackBean forumSecondBackBean: forumSecondBack) {
                     if(forumSecondBackBean.getPId() == forumBackBean.getBId()) {
-                        comment.getForumSecondBack().add(forumSecondBackBean);
+                        comment.addSimpleComment(forumBackBean.getUId(),
+                                forumBackBean.getNickName(),
+                                forumSecondBackBean.getUId(),
+                                forumSecondBackBean.getNickName(),
+                                forumSecondBackBean.getSContent(),
+                                true);
                         if(forumSecondBackBean.isSHasback()) {
                             for(ForumMultiBackBean forumMultiBackBean: forumMultiBack) {
-//                                if(forumMultiBackBean.getPId() == forumBackBean.getBId())
+                                if(forumMultiBackBean.getPId() == forumSecondBackBean.getSId() && forumMultiBackBean.getpType() == -1) {
+                                    comment.addSimpleComment(forumSecondBackBean.getUId(),
+                                            forumSecondBackBean.getNickName(),
+                                            forumMultiBackBean.getUId(),
+                                            forumMultiBackBean.getNickName(),
+                                            forumMultiBackBean.getMContent(),
+                                            false);
+                                }
                             }
                         }
                     }

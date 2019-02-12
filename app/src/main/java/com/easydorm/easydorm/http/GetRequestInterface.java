@@ -4,6 +4,7 @@ import com.easydorm.easydorm.entity.BaseResponse;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
@@ -27,7 +28,8 @@ public interface GetRequestInterface {
 
     @GET("getTopics")
     Call<BaseResponse> getTopics(
-            @Header("access_token") String accessToken
+            @Header("access_token") String accessToken,
+            @Query("page") int page
     );
 
     @GET("getTopic")

@@ -8,6 +8,7 @@ public class ForumMultiBackBean {
      * uId : 5
      * mCreatetime : 2019-01-21 14:35:35
      * mHasback : false
+     * pType: 2
      * mContent : hahaha
      * nickName : lqfhahaha1
      */
@@ -18,6 +19,7 @@ public class ForumMultiBackBean {
     private int uId;
     private String mCreatetime;
     private boolean mHasback;
+    private int pType;
     private String mContent;
     private String nickName;
 
@@ -69,6 +71,13 @@ public class ForumMultiBackBean {
         this.mHasback = mHasback;
     }
 
+    public int getpType() {
+        return pType;
+    }
+
+    public void setpType(int pType) {
+        this.pType = pType;
+    }
     public String getMContent() {
         return mContent;
     }

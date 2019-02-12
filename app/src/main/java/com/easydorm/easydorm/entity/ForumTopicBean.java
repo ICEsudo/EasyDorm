@@ -1,7 +1,6 @@
 package com.easydorm.easydorm.entity;
 
 
-import com.easydorm.easydorm.Utils.Constants;
 import com.easydorm.easydorm.Utils.TimeUtil;
 
 import java.io.Serializable;
@@ -16,6 +15,8 @@ public class ForumTopicBean implements Serializable {
      * tCreatetime : 2018-12-31T09:30:48.000+0000
      * tUpdatetime : 2018-12-31T09:30:48.000+0000
      * tContent : hello~ world!
+     * tDelete : true
+     * commentCount : 0
      */
 
     private Integer tId;
@@ -29,10 +30,10 @@ public class ForumTopicBean implements Serializable {
     private String tContent;
     private String nickName;
     private String picture;
-
+    private boolean tDelete;
+    private Integer commentCount;
 
     private String summary;
-
 
 
     public String getNickName() {
@@ -124,5 +125,21 @@ public class ForumTopicBean implements Serializable {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public boolean isTDelete() {
+        return tDelete;
+    }
+
+    public void setTDelete(boolean tDelete) {
+        this.tDelete = tDelete;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
     }
 }

@@ -48,7 +48,7 @@ public class RecommendFragment extends Fragment {
 
     private PostAdapter postAdapter;
     private ArrayList<ForumTopicBean> postArrayList;
-
+    private int page;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,8 +65,13 @@ public class RecommendFragment extends Fragment {
 
         postAdapter.bindToRecyclerView(postRecommendRecyclerView);
         postAdapter.setEmptyView(R.layout.empty_view_recommend);
+        postAdapter.disableLoadMoreIfNotFullPage();
 
         initListener();
+
+
+        page = 1;
+        loadPost();
 
         return view;
     }
@@ -111,6 +116,13 @@ public class RecommendFragment extends Fragment {
                 }
             }
         });
+        postAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                loadPost();
+//                ToastUtil.toast("onLoadMoreRequested");
+            }
+        }, postRecommendRecyclerView);
     }
 
 
@@ -118,14 +130,12 @@ public class RecommendFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadPost();
     }
 
 
     private void loadPost() {
-
         GetRequestInterface getRequestInterface = HttpUtil.getGetRequestInterface();
-        Call<BaseResponse> call = getRequestInterface.getTopics(EasyDormApp.getUser().getUserToken().getAccessToken());
+        Call<BaseResponse> call = getRequestInterface.getTopics(EasyDormApp.getUser().getUserToken().getAccessToken(), page);
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
@@ -134,7 +144,15 @@ public class RecommendFragment extends Fragment {
                     if(baseResponse.getCode() == 1) {
                         List<ForumTopicBean> newList = baseResponse.getExtend().getForumTopics();
                         if(newList != null) {
-                            postAdapter.replaceData(newList);
+//                            int sz = postArrayList.size();
+                            //postAdapter.notifyItemRangeInserted(sz, newList.size());
+                            if(page <= baseResponse.getExtend().getPages()) {
+                                postArrayList.addAll(newList);
+                                page ++;
+                                postAdapter.loadMoreComplete();
+                            } else {
+                                postAdapter.loadMoreEnd();
+                            }
                         }
                     }
                 } else {
@@ -145,6 +163,7 @@ public class RecommendFragment extends Fragment {
             @Override
             public void onFailure(Call<BaseResponse> call, Throwable t) {
 //                ToastUtil.toast("请求失败");
+                postAdapter.loadMoreFail();
             }
         });
     }

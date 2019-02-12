@@ -1,4 +1,4 @@
-package com.easydorm.easydorm.chat;
+package com.easydorm.easydorm.chat.fragment;
 
 
 import android.os.Bundle;

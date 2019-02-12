@@ -34,6 +34,7 @@ public class PostAdapter extends BaseQuickAdapter<ForumTopicBean, PostViewHolder
                 .setText(R.id.post_title, item.getTTitle())
                 .setText(R.id.post_text, item.getSummary())
                 .setText(R.id.post_agree_text, String.valueOf(item.getTGoodcount()))
+                .setText(R.id.post_comment_text, String.valueOf(item.getCommentCount()))
                 .addOnClickListener(R.id.post_user_avatar)
                 .addOnClickListener(R.id.post_user_nick_name)
                 .addOnClickListener(R.id.post_agree_icon)

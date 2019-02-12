@@ -35,12 +35,13 @@ public class PostAdapter extends BaseQuickAdapter<ForumTopicBean, PostViewHolder
                 .setText(R.id.post_text, item.getSummary())
                 .setText(R.id.post_agree_text, String.valueOf(item.getTGoodcount()))
                 .setText(R.id.post_comment_text, String.valueOf(item.getCommentCount()))
+                .setVisible(R.id.post_flag, item.getTType() == 2)
                 .addOnClickListener(R.id.post_user_avatar)
                 .addOnClickListener(R.id.post_user_nick_name)
                 .addOnClickListener(R.id.post_agree_icon)
                 .addOnClickListener(R.id.post_comment_icon)
-                .addOnClickListener(R.id.post_share)
-                .addOnClickListener(R.id.post_more);
+                .addOnClickListener(R.id.post_share);
+
 
         Glide.with(mContext).load(Constants.Url.baseUrl + item.getPicture()).into((CircleImageView) helper.getView(R.id.post_user_avatar));
 

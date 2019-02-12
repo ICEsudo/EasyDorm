@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.easydorm.easydorm.BaseActivity;
@@ -43,6 +44,8 @@ public class WritePostActivity extends AppCompatActivity {
     EditText writeTitleEditText;
     @BindView(R.id.number_of_text)
     TextView numberOfText;
+    @BindView(R.id.write_post_switch)
+    Switch aSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,7 @@ public class WritePostActivity extends AppCompatActivity {
                 String content = writePostEditText.getText().toString();
                 if(checkInput(title, content)) {
                     ToastUtil.toast("正在发布");
-                    createNewPost(title, content, 1);
+                    createNewPost(title, content, aSwitch.isChecked()?2:1);
                 }
             }
         });

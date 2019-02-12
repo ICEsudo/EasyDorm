@@ -48,15 +48,19 @@
                 app:layout_constraintStart_toEndOf="@+id/post_user_avatar"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/post_more"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/more_horiz___px"
+            <com.haozhang.lib.SlantedTextView
+                android:id="@+id/post_flag"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:slantedBackgroundColor="@color/colorPrimary"
+                app:slantedLength="25dp"
+                app:slantedMode="right"
+                app:slantedText="交易帖"
+                app:slantedTextColor="@color/colorWhite"
+                app:slantedTextSize="10sp" />
 
             <TextView
                 android:id="@+id/post_title"
@@ -130,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/share___px"
+                android:src="@drawable/more_horiz___px"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

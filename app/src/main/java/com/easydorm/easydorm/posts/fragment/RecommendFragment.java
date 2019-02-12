@@ -112,11 +112,8 @@ public class RecommendFragment extends Fragment {
                     case R.id.post_comment_icon:
                         ToastUtil.toast("评论没做");
                         break;
-                    case R.id.post_more:
-                        ToastUtil.toast("更多");
-                        break;
                     case R.id.post_share:
-                        ToastUtil.toast("分享不了");
+                        ToastUtil.toast("更多");
                         break;
                 }
             }
